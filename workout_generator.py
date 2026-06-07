@@ -9,23 +9,12 @@ from config import *
 
 W, H = A4
 
-try:
-    font_paths = [
-        'C:/Windows/Fonts/arialbd.ttf',
-        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-    ]
-    bold_font = None
-    for path in font_paths:
-        if os.path.exists(path):
-            bold_font = path
-            break
-    if bold_font:
-        pdfmetrics.registerFont(TTFont('P-Bold', bold_font))
-        pdfmetrics.registerFont(TTFont('P-Med', bold_font.replace('Bold','').replace('bd','')))
-        pdfmetrics.registerFont(TTFont('P-Reg', bold_font.replace('Bold','').replace('bd','')))
-        pdfmetrics.registerFont(TTFont('P-Light', bold_font.replace('Bold','').replace('bd','')))
-except:
-    pass
+# Use built-in Helvetica as fallback for all platforms
+from reportlab.lib.fonts import addMapping
+addMapping('P-Bold', 0, 0, 'Helvetica-Bold')
+addMapping('P-Med', 0, 0, 'Helvetica')
+addMapping('P-Reg', 0, 0, 'Helvetica')
+addMapping('P-Light', 0, 0, 'Helvetica')
 
 def fill_bg(c, col=None):
     c.setFillColor(col or BG)
