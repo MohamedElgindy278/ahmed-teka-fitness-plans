@@ -107,7 +107,13 @@ def chrome(c, section, pgnum, data, accent=GOLD):
     c.roundRect(ig_x, FTR_H/2-6, 11, 11, 2.5, fill=0, stroke=1)
     c.circle(ig_x+5.5, FTR_H/2, 3, fill=0, stroke=1)
     c.setFillColor(GOLD); c.circle(ig_x+9, FTR_H/2+4.5, 1.2, fill=1, stroke=0)
-    tl(c, data.get('instagram','@coach.teka1'), ig_x+15, FTR_H/2-4, 'Helvetica', 7.5, GOLD)
+    ig_text = data.get('instagram','@coach.teka1')
+    ig_link = data.get('instagram_link','https://instagram.com/coach.teka1')
+    tl(c, ig_text, ig_x+15, FTR_H/2-4, 'Helvetica', 7.5, GOLD)
+    ig_w = c.stringWidth(ig_text, 'Helvetica', 7.5)
+    c.setStrokeColor(GOLD); c.setLineWidth(0.3)
+    c.line(ig_x+15, FTR_H/2-5.5, ig_x+15+ig_w, FTR_H/2-5.5)
+    c.linkURL(ig_link, (ig_x, FTR_H/2-7, ig_x+15+ig_w+2, FTR_H/2+5))
     tc(c, data.get('phone','01033047057'), W/2, FTR_H/2-4, 'Helvetica', 7.5, SILVER)
     tr(c, f'{pgnum} / {TOTAL_PAGES}', W-12, FTR_H/2-4, 'Helvetica-Bold', 8.5, accent)
 
@@ -191,7 +197,13 @@ def p1_cover(c, data):
     
     fill_rect(c, 0, 0, W, 40, Color(0,0,0,0.88))
     hline(c, 0, 40, W, GOLD, 0.8)
-    tl(c, data.get('instagram', '@coach.teka1'), STRIPE_W+16, 15, 'Helvetica', 8, GOLD)
+    ig_text = data.get('instagram', '@coach.teka1')
+    ig_link = data.get('instagram_link', 'https://instagram.com/coach.teka1')
+    tl(c, ig_text, STRIPE_W+16, 15, 'Helvetica', 8, GOLD)
+    ig_w = c.stringWidth(ig_text, 'Helvetica', 8)
+    c.setStrokeColor(GOLD); c.setLineWidth(0.3)
+    c.line(STRIPE_W+16, 13.5, STRIPE_W+16+ig_w, 13.5)
+    c.linkURL(ig_link, (STRIPE_W+16, 12, STRIPE_W+16+ig_w+2, 28))
     tc(c, data.get('phone', '01033047057'), W/2, 15, 'Helvetica', 8, SILVER)
     tr(c, f'Coach {data.get("coach_name", "AHMED TEKA")}', W-14, 15, 'Helvetica-Bold', 9, GOLD)
     
@@ -412,6 +424,10 @@ def p_exercise(c, data, day_key, pgnum, accent=GOLD):
         bcx2 = ccx[4]; bcy = ey - ROW_H/2
         c.setFillColor(accent); c.circle(bcx2, bcy, 11, fill=1, stroke=0)
         tc(c, '>', bcx2-1, bcy-4, 'Helvetica-Bold', 9, BG)
+        # Add clickable link
+        ex_link = ex.get('link', '#')
+        if ex_link and ex_link != '#':
+            c.linkURL(ex_link, (bcx2-11, bcy-11, bcx2+11, bcy+11))
         ey -= ROW_H
     
     hline(c, x, ey, cw, accent, 0.8)
@@ -534,9 +550,15 @@ def p8_coach(c, data):
         rrect(c, bx, by, btn_w, btn_h, 5, Color(0.04,0.05,0.1,0.85), ac, 1.2)
         fill_rect(c, bx, by+btn_h-3, btn_w, 3, ac)
         tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'Helvetica-Bold', 11, WHITE)
+        
+        # Instagram button = clickable link
+        if i == 0:
+            ig_link = data.get('instagram_link', 'https://instagram.com/coach.teka1')
+            c.linkURL(ig_link, (bx, by, bx+btn_w, by+btn_h))
     
     tr(c, f'{TOTAL_PAGES} / {TOTAL_PAGES}', W-14, BOT_BAND/2-4, 'Helvetica-Bold', 9, GOLD)
     c.showPage()
+
 # ═══════════════════════════════════════════════
 # BUILD FUNCTION
 # ═══════════════════════════════════════════════
