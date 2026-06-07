@@ -8,10 +8,6 @@ from config import *
 W, H = A4
 
 # ═══════════════════════════════════════════════
-# FONTS - Use built-in Helvetica for cloud
-# ═══════════════════════════════════════════════
-
-# ═══════════════════════════════════════════════
 # PRIMITIVES
 # ═══════════════════════════════════════════════
 
@@ -121,17 +117,7 @@ def chrome(c, section, pgnum, data, accent=GOLD):
 
 def p1_cover(c, data):
     fill_bg(c)
-    
-    # Try to load cover photo
-    cover_photo = data.get('photo_cover', '')
-    try:
-        if cover_photo and os.path.exists(cover_photo):
-            c.drawImage(cover_photo, 0, 0, W, H, preserveAspectRatio=True)
-        else:
-            raise Exception()
-    except:
-        grad_v(c, 0, 0, W, H, BG4, BG)
-    
+    grad_v(c, 0, 0, W, H, BG4, BG)
     c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     left_stripe(c)
@@ -150,32 +136,36 @@ def p1_cover(c, data):
     c.line(STRIPE_W+20, ty+30, STRIPE_W+20+50, ty+30)
     c.line(W-20-50, ty+30, W-20, ty+30)
     
-    program = data.get('program', 'PUSH // PULL // LEGS')
-    words = program.replace('//', '●').split()
+    # Display program name EXACTLY as entered
+    program_name = data.get('program', 'PUSH // PULL // LEGS')
     
-    c.setFont('Helvetica-Bold', 36)
-    w1 = c.stringWidth(words[0] if len(words)>0 else 'PUSH', 'Helvetica-Bold', 36)
-    w2 = c.stringWidth(words[2] if len(words)>2 else 'PULL', 'Helvetica-Bold', 36)
-    w3 = c.stringWidth(words[4] if len(words)>4 else 'LEGS', 'Helvetica-Bold', 36)
-    dot_w = c.stringWidth('●', 'Helvetica-Bold', 28)
+    # Auto-size font based on name length
+    name_len = len(program_name)
+    if name_len <= 15:
+        font_size = 44
+    elif name_len <= 20:
+        font_size = 36
+    elif name_len <= 25:
+        font_size = 28
+    else:
+        font_size = 22
     
-    total_elements = 5
-    gap = (W - (w1 + w2 + w3 + dot_w*2)) / (total_elements + 1)
+    # Split program name by spaces for potential multiline
+    words = program_name.split()
+    if len(words) > 2 and name_len > 20:
+        # Two lines
+        mid = len(words) // 2
+        line1 = ' '.join(words[:mid])
+        line2 = ' '.join(words[mid:])
+        tc(c, line1, W/2, ty + 15, 'Helvetica-Bold', font_size, WHITE)
+        tc(c, line2, W/2, ty - 20, 'Helvetica-Bold', font_size, GOLD)
+    else:
+        # Single line
+        tc(c, program_name, W/2, ty, 'Helvetica-Bold', font_size, WHITE)
     
-    x1 = gap + w1/2
-    x_dot1 = x1 + w1/2 + gap + dot_w/2
-    x2 = x_dot1 + dot_w/2 + gap + w2/2
-    x_dot2 = x2 + w2/2 + gap + dot_w/2
-    x3 = x_dot2 + dot_w/2 + gap + w3/2
-    
-    tc(c, words[0] if len(words)>0 else 'PUSH', x1, ty, 'Helvetica-Bold', 36, WHITE)
-    tc(c, '●', x_dot1, ty-2, 'Helvetica-Bold', 28, GOLD2)
-    tc(c, words[2] if len(words)>2 else 'PULL', x2, ty, 'Helvetica-Bold', 36, WHITE)
-    tc(c, '●', x_dot2, ty-2, 'Helvetica-Bold', 28, GOLD2)
-    tc(c, words[4] if len(words)>4 else 'LEGS', x3, ty, 'Helvetica-Bold', 36, GOLD)
-    
-    rrect(c, W/2-35, ty-35, 70, 18, 3, GOLD_DIM, GOLD, 0.8)
-    tc(c, data.get('volume', 'VOL.1'), W/2, ty-29, 'Helvetica-Bold', 9, GOLD)
+    # VOL badge
+    rrect(c, W/2-35, ty-60, 70, 18, 3, GOLD_DIM, GOLD, 0.8)
+    tc(c, data.get('volume', 'VOL.1'), W/2, ty-54, 'Helvetica-Bold', 9, GOLD)
     
     # CLIENT CARD
     by = 130
@@ -213,14 +203,6 @@ def p1_cover(c, data):
 
 def p2_intro(c, data):
     fill_bg(c)
-    
-    intro_photo = data.get('photo_intro', '')
-    try:
-        if intro_photo and os.path.exists(intro_photo):
-            c.drawImage(intro_photo, 0, 0, W, H, preserveAspectRatio=True)
-    except:
-        pass
-    
     c.setFillColor(Color(0, 0, 0, alpha=0.75))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     chrome(c, 'INTRODUCTION', 2, data)
@@ -260,17 +242,16 @@ def p2_intro(c, data):
         tc(c, val, sx+(sw2-5)/2, stats_y+22, 'Helvetica-Bold', 18, GOLD)
         tc(c, lbl, sx+(sw2-5)/2, stats_y+6, 'Helvetica', 6.5, GRAY)
     
-    # TIMELINE
     ty2 = y - 2
     tl(c, 'PROGRAM TIMELINE', rx, ty2, 'Helvetica-Bold', 11, GOLD)
     hline(c, rx, ty2-5, rw, GOLD3, 0.5)
     ty2 -= 18
     
     timeline = data.get('timeline', [
-        {'week': 'WEEK 1-2', 'phase': 'FOUNDATION', 'desc': 'Master form and build mind-muscle connection.'},
-        {'week': 'WEEK 3-4', 'phase': 'PROGRESSION', 'desc': 'Increase load by 5-10%. Volume increases.'},
-        {'week': 'WEEK 5-6', 'phase': 'INTENSIFICATION', 'desc': 'Push beyond comfort zones.'},
-        {'week': 'WEEK 7-8', 'phase': 'PEAK OUTPUT', 'desc': 'Maximum effort on all lifts.'},
+        {'week': 'WEEK 1-2', 'phase': 'FOUNDATION', 'desc': 'Master form.'},
+        {'week': 'WEEK 3-4', 'phase': 'PROGRESSION', 'desc': 'Increase load.'},
+        {'week': 'WEEK 5-6', 'phase': 'INTENSIFICATION', 'desc': 'Push beyond.'},
+        {'week': 'WEEK 7-8', 'phase': 'PEAK OUTPUT', 'desc': 'Maximum effort.'},
     ])
     
     for i, ph in enumerate(timeline):
@@ -315,11 +296,10 @@ def p3_warmup(c, data):
     wrap(c, warmup.get('cardio', '5-10 MIN LIGHT CARDIO'), x+44, cy-40, cw-58, 'Helvetica', 8, SILVER, lh=13)
     
     btn_y = cy - ch1 - 14; btn_h = 96; btn_w = cw / 2 - 8
-    for i, (lbl, note) in enumerate([
-        ('UPPER BODY SEQUENCE', warmup.get('upper_note', '')),
-        ('LOWER BODY SEQUENCE', warmup.get('lower_note', '')),
+    for i, (lbl, note, link, ac) in enumerate([
+        ('UPPER BODY SEQUENCE', warmup.get('upper_note', ''), warmup.get('upper_link', '#'), GOLD),
+        ('LOWER BODY SEQUENCE', warmup.get('lower_note', ''), warmup.get('lower_link', '#'), ACCENT),
     ]):
-        ac = GOLD if i == 0 else ACCENT
         bx = x + i * (btn_w + 16)
         fill_rect(c, bx+4, btn_y-btn_h-4, btn_w, btn_h, Color(0,0,0,0.5))
         rrect(c, bx, btn_y-btn_h, btn_w, btn_h, 6, BG3, ac, 1.0)
@@ -333,18 +313,12 @@ def p3_warmup(c, data):
         c.setFillColor(ac); c.circle(px2+12, py2+10, 13, fill=1, stroke=0)
         tc(c, '>', px2+9, py2+7, 'Helvetica-Bold', 11, BG)
     
-    # Protocol rules
     tp_y = btn_y - btn_h - 14; tp_h = 76
     rrect(c, x, tp_y-tp_h, cw, tp_h, 6, BG3, GOLD_DIM, 0.5)
     fill_rect(c, x, tp_y-tp_h, 4, tp_h, GOLD3)
     tl(c, 'WARM-UP PROTOCOL RULES', x+16, tp_y-14, 'Helvetica-Bold', 10.5, GOLD)
     hline(c, x+16, tp_y-20, cw-30, Color(1,1,1,0.08), 0.4)
-    protocol = warmup.get('protocol', [
-        'Never skip warm-up — injury prevention is non-negotiable',
-        'Full range of motion on every drill',
-        'Use warm-up sets: 50% > 75% > working weight',
-        'Note restricted areas and spend extra time there',
-    ])
+    protocol = warmup.get('protocol', ['Never skip warm-up', 'Full ROM on every drill'])
     for ti, tip in enumerate(protocol):
         col_x = x + 16 + (ti % 2) * (cw / 2)
         row_y = tp_y - 32 - (ti // 2) * 16
@@ -354,7 +328,7 @@ def p3_warmup(c, data):
     c.showPage()
 
 # ═══════════════════════════════════════════════
-# EXERCISE PAGES (4, 5, 6)
+# EXERCISE PAGES
 # ═══════════════════════════════════════════════
 
 def p_exercise(c, data, day_key, pgnum, accent=GOLD):
@@ -365,33 +339,52 @@ def p_exercise(c, data, day_key, pgnum, accent=GOLD):
     if not day_exercises:
         day_exercises = exercises[:8]
     
-    day_names = {
-        'push_day': {'label': 'PUSH', 'subtitle': 'CHEST · SHOULDERS · TRICEPS', 'desc': 'Prioritize chest activation on horizontal movements.'},
-        'pull_day': {'label': 'PULL', 'subtitle': 'BACK · BICEPS · REAR DELTS', 'desc': 'Drive elbows — not hands — on all row variations.'},
-        'legs_day': {'label': 'LEGS', 'subtitle': 'QUADS · HAMSTRINGS · GLUTES · CALVES', 'desc': 'Heavy compound movements first.'},
-    }
+    # Get day info from data or use defaults
+    day_info = data.get(f'{day_key}_info', {})
+    day_label = day_info.get('label', day_key.replace('_', ' ').upper())
+    day_subtitle = day_info.get('subtitle', '')
+    day_desc = day_info.get('desc', '')
+    day_rest = day_info.get('rest_note', 'REST 90-120 SECONDS BETWEEN SETS')
     
-    day_info = day_names.get(day_key, day_names['push_day'])
+    # If no day_info, use day_key to generate
+    if not day_info:
+        day_names = {
+            'push_day': ('PUSH', 'CHEST · SHOULDERS · TRICEPS'),
+            'pull_day': ('PULL', 'BACK · BICEPS · REAR DELTS'),
+            'legs_day': ('LEGS', 'QUADS · HAMSTRINGS · GLUTES · CALVES'),
+            'chest_back_day': ('CHEST & BACK', 'CHEST · LATS · RHOMBOIDS'),
+            'shoulders_arms_day': ('SHOULDERS & ARMS', 'DELTS · BICEPS · TRICEPS'),
+            'upper_day': ('UPPER BODY', 'CHEST · BACK · SHOULDERS · ARMS'),
+            'lower_day': ('LOWER BODY', 'QUADS · HAMSTRINGS · GLUTES · CALVES'),
+            'chest_day': ('CHEST', 'PECTORALS'),
+            'back_day': ('BACK', 'LATS · TRAPS'),
+            'shoulders_day': ('SHOULDERS', 'DELTOIDS'),
+            'arms_day': ('ARMS', 'BICEPS · TRICEPS'),
+            'full_body_a': ('FULL BODY A', 'STRENGTH FOCUS'),
+            'full_body_b': ('FULL BODY B', 'HYPERTROPHY FOCUS'),
+        }
+        if day_key in day_names:
+            day_label, day_subtitle = day_names[day_key]
     
-    chrome(c, f'{day_info["label"]} DAY', pgnum, data, accent)
+    chrome(c, f'{day_label} DAY', pgnum, data, accent)
     x, y, cw = content_area()
     
     c.saveState()
     c.setFillColor(Color(1, 1, 1, 0.045))
     c.setFont('Helvetica-Bold', 90)
-    c.drawString(x-6, FTR_H+8, day_info['label'])
+    c.drawString(x-6, FTR_H+8, day_label[:10])
     c.restoreState()
     
-    tc(c, day_info['label'], x + cw/2, y - 10, 'Helvetica-Bold', 44, WHITE)
-    tc(c, day_info['subtitle'], x + cw/2, y - 32, 'Helvetica', 10, accent)
+    tc(c, day_label, x + cw/2, y - 10, 'Helvetica-Bold', 44, WHITE)
+    tc(c, day_subtitle, x + cw/2, y - 32, 'Helvetica', 10, accent)
     hline(c, x, y - 40, cw, accent, 1.0)
     
     dy = y - 56
-    wrap(c, day_info['desc'], x, dy, cw, 'Helvetica', 8.5, GRAY, lh=14)
+    wrap(c, day_desc, x, dy, cw, 'Helvetica', 8.5, GRAY, lh=14)
     
     rn_y = dy - 34
     rrect(c, x, rn_y-18, cw, 17, 3, GOLD_PANEL, accent, 0.7)
-    tc(c, 'REST 90-120 SECONDS BETWEEN ALL WORKING SETS', x + cw/2, rn_y - 11, 'Helvetica-Bold', 8.5, accent)
+    tc(c, day_rest, x + cw/2, rn_y - 11, 'Helvetica-Bold', 8.5, accent)
     
     cx_arr = [x, x+188, x+234, x+282, x+336]
     cw_arr = [188, 46, 48, 54, cw-(336-x)]
@@ -444,14 +437,12 @@ def p7_tips(c, data):
     tl(c, 'BEST RESULTS', x+tw, y, 'Helvetica-Bold', 26, WHITE)
     hline(c, x, y-7, cw, GOLD, 0.9)
     
-    tips = data.get('tips', [
-        {'title': 'PERFECT FORM', 'icon': '01', 'body': 'Every rep with perfect technique.'},
-        {'title': 'PROGRESSIVE OVERLOAD', 'icon': '02', 'body': 'Add weight or reps weekly.'},
-        {'title': 'SLEEP AS TRAINING', 'icon': '03', 'body': '7-9 hours nightly.'},
-        {'title': 'FUEL YOUR SESSIONS', 'icon': '04', 'body': '1.8-2.2g protein per kg.'},
-        {'title': 'HYDRATION DAILY', 'icon': '05', 'body': '4 liters of water minimum.'},
-        {'title': 'MENTAL EDGE', 'icon': '06', 'body': 'Visualization increases power.'},
-    ])
+    tips = data.get('tips', [])
+    if len(tips) < 6:
+        defaults = ['PERFECT FORM', 'PROGRESSIVE OVERLOAD', 'SLEEP', 'NUTRITION', 'HYDRATION', 'MENTAL EDGE']
+        for i, t in enumerate(defaults):
+            if len(tips) <= i:
+                tips.append({'title': t, 'icon': f'{i+1:02d}', 'body': 'Focus on quality.'})
     
     GAP = 10; COLS = 2; ROWS = 3
     cw2 = (cw - GAP * (COLS-1)) / COLS
@@ -465,12 +456,11 @@ def p7_tips(c, data):
         fill_rect(c, tx, ty-ch2, 3, ch2, GOLD3)
         fill_rect(c, tx, ty-2, cw2, 2, GOLD)
         c.setFillColor(GOLD_DIM); c.circle(tx+20, ty-18, 12, fill=1, stroke=0)
-        tc(c, tip.get('icon', str(i+1)), tx+20, ty-22, 'Helvetica-Bold', 9.5, GOLD)
-        tl(c, tip['title'], tx+40, ty-14, 'Helvetica-Bold', 11, WHITE)
+        tc(c, tip.get('icon', f'{i+1:02d}'), tx+20, ty-22, 'Helvetica-Bold', 9.5, GOLD)
+        tl(c, tip['title'][:20], tx+40, ty-14, 'Helvetica-Bold', 11, WHITE)
         hline(c, tx+40, ty-20, 80, GOLD3, 0.5)
-        wrap(c, tip['body'], tx+12, ty-34, cw2-18, 'Helvetica', 8, GRAY, lh=13)
+        wrap(c, tip['body'][:80], tx+12, ty-34, cw2-18, 'Helvetica', 8, GRAY, lh=13)
     
-    # Quote
     qy = y - 24 - ROWS * (ch2 + GAP) - 12
     qh = 82
     rrect(c, x-2, qy-qh-2, cw+4, qh+4, 7, BG, GOLD3, 0.5)
@@ -497,15 +487,7 @@ def p8_coach(c, data):
     for i in range(0, int(W)+30, 28): c.line(i, 0, i, H)
     for j in range(0, int(H)+30, 28): c.line(0, j, W, j)
     
-    coach_photo = data.get('photo_coach', '')
-    try:
-        if coach_photo and os.path.exists(coach_photo):
-            c.drawImage(coach_photo, 0, 0, W, H, preserveAspectRatio=True)
-        else:
-            raise Exception()
-    except:
-        grad_v(c, 0, 0, W, H, BG4, BG)
-    
+    grad_v(c, 0, 0, W, H, BG4, BG)
     c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     left_stripe(c)
@@ -553,17 +535,52 @@ def p8_coach(c, data):
 def generate_pdf(data):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
-    c.setTitle(f'AHMED TEKA — {data.get("program", "Workout Plan")}')
+    
+    program_name = data.get('program', 'Workout Plan')
+    c.setTitle(f'AHMED TEKA — {program_name}')
     c.setAuthor(data.get('coach_name', 'AHMED TEKA'))
     c.setSubject('Professional Workout Plan')
-    c.setCreator('Ahmed Teka PDF Engine v2')
+    c.setCreator('Ahmed Teka PDF Engine v3')
+    
+    # Get unique days from exercises
+    exercises = data.get('exercises', [])
+    unique_days = []
+    seen = set()
+    for ex in exercises:
+        day = ex.get('day', '')
+        if day and day not in seen:
+            unique_days.append(day)
+            seen.add(day)
+    
+    # Default days if none found
+    if not unique_days:
+        unique_days = ['push_day', 'pull_day', 'legs_day']
+    
+    # Accent colors for each page
+    accents = [GOLD, GOLD2, GOLD3, GOLD, GOLD2, GOLD3, GOLD, GOLD2]
     
     p1_cover(c, data)
     p2_intro(c, data)
     p3_warmup(c, data)
-    p_exercise(c, data, 'push_day', 4, GOLD)
-    p_exercise(c, data, 'pull_day', 5, GOLD2)
-    p_exercise(c, data, 'legs_day', 6, GOLD3)
+    
+    # Dynamic exercise pages based on actual days
+    for idx, day_key in enumerate(unique_days):
+        pgnum = 4 + idx
+        accent = accents[idx % len(accents)]
+        
+        # Pass day info to generator
+        day_data = data.copy()
+        
+        # Set day-specific info
+        day_info = data.get(f'{day_key}_info', {})
+        day_data[f'{day_key}_info'] = day_info
+        
+        p_exercise(c, day_data, day_key, pgnum, accent)
+    
+    # Always show tips and coach pages
+    tips_pgnum = 4 + len(unique_days)
+    coach_pgnum = tips_pgnum + 1
+    
     p7_tips(c, data)
     p8_coach(c, data)
     
