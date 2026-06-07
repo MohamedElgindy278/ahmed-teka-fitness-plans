@@ -295,51 +295,37 @@ def p3_meals(c, data):
     my = y - 35
     for i, meal in enumerate(meals[:6]):
         icon = icons[i] if i < len(icons) else '🍽️'
-        mh = 115
+        mh = 120
         
         rrect(c, x, my-mh, cw, mh-3, 7, WHITE, GREEN_DIM, 0.3)
         fill_rect(c, x, my-mh, 4, mh, GREEN)
         
-        # Calculate vertical center of the card
-        card_center_y = my - mh/2
+        # Icon circle - top left
+        circle(c, x+30, my-28, 18, GREEN_DIM)
+        tc(c, icon, x+30, my-32, 'P-Reg', 16, BLACK)
         
-        # Icon circle - vertically centered
-        circle(c, x+30, card_center_y, 18, GREEN_DIM)
-        tc(c, icon, x+30, card_center_y-4, 'P-Reg', 16, BLACK)
+        # Meal name + type - top right
+        tr(c, meal.get('name', ''), x+cw-12, my-16, 'P-Bold', 13, BLACK)
+        tr(c, meal.get('type', ''), x+cw-12, my-30, 'P-Reg', 8, GRAY)
         
-        # Divide card height into equal sections for: name+type, calories+macros, ingredients, alternative
-        section_height = (mh - 20) / 4  # 4 equal sections
+        # Calories + macros - left side below icon
+        tl(c, f'{meal.get("calories", "0")} kcal', x+56, my-44, 'P-Bold', 18, GREEN)
+        tl(c, f'P:{meal.get("protein","0")}g | C:{meal.get("carbs","0")}g | F:{meal.get("fat","0")}g', x+56, my-58, 'P-Reg', 9, GRAY)
         
-        # Section 1: Name + Type (top section)
-        sec1_y = my - 10
-        tr(c, meal.get('name', ''), x+cw-12, sec1_y, 'P-Bold', 13, BLACK)
-        tr(c, meal.get('type', ''), x+cw-12, sec1_y - 14, 'P-Reg', 8, GRAY)
-        
-        # Section 2: Calories + Macros
-        sec2_y = my - 10 - section_height
-        tl(c, f'{meal.get("calories", "0")} kcal', x+56, sec2_y, 'P-Bold', 19, GREEN)
-        tl(c, f'Protein:{meal.get("protein","0")}g | Carbs:{meal.get("carbs","0")}g | Fat:{meal.get("fat","0")}g', x+56, sec2_y - 16, 'P-Reg', 9, GRAY)
-        
-        # Section 3: Ingredients - vertically centered in its section
-        sec3_y = my - 10 - section_height * 2
+        # Ingredients - right side, BIGGER font
         ingredients = meal.get('ingredients', [])
-        num_ingredients = len(ingredients) if isinstance(ingredients, list) else 1
-        
-        # Calculate starting Y to center ingredients vertically in section 3
-        ing_start_y = sec3_y - 6  # Start from top of section 3
-        
+        ing_y = my - 44
         if isinstance(ingredients, list):
             for ing in ingredients[:4]:
-                tr(c, f'• {ing}', x+cw-12, ing_start_y, 'P-Reg', 9, GRAY)
-                ing_start_y -= 13
+                tr(c, f'• {ing}', x+cw-12, ing_y, 'P-Reg', 11, GRAY_DARK)
+                ing_y -= 14
         else:
-            tr(c, f'• {ingredients[:55]}', x+cw-12, ing_start_y, 'P-Reg', 9, GRAY)
+            tr(c, f'• {ingredients[:55]}', x+cw-12, ing_y, 'P-Reg', 11, GRAY_DARK)
         
-        # Section 4: Alternative - vertically centered
-        sec4_y = my - 10 - section_height * 3
+        # Alternative - left side at bottom
         alt = meal.get('alternative', '')
         if alt:
-            tr(c, f'🔄 Alternative: {alt[:55]}', x+cw-12, sec4_y, 'P-Reg', 8, GREEN)
+            tl(c, f'🔄 {alt[:60]}', x+12, my-mh+14, 'P-Reg', 9, GREEN)
         
         my -= mh + 3
     
@@ -348,7 +334,7 @@ def p3_meals(c, data):
         tc(c, f'Total: {data.get("total_calories", "0")} kcal/day', x + cw/2, my-16, 'P-Bold', 15, GREEN)
     
     c.showPage()
-    
+
 # ═══════════════════════════════════════════════
 # PAGE 4 - GUIDELINES
 # ═══════════════════════════════════════════════
