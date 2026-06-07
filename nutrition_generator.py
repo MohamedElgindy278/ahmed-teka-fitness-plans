@@ -210,6 +210,7 @@ def p1_cover(c, data):
     c.rect(0, 0, W, H, stroke=0, fill=1)
     stripe(c)
     
+    # TOP BAR - English LTR
     fill_rect(c, 0, H-52, W, 52, Color(0,0,0,0.85))
     hline(c, 0, H-52, W, GREEN_MID, 1.2)
     tl(c, 'AHMED', STRIPE_W+16, H-32, 'P-Bold', 18, GREEN_MID)
@@ -217,7 +218,7 @@ def p1_cover(c, data):
     hline(c, STRIPE_W+16, H-40, 100, GREEN_MID, 0.6)
     tr(c, 'NUTRITION COACH', W-16, H-32, 'P-Reg', 8.5, GRAY_LIGHT)
     
-    # MAIN TITLE
+    # MAIN TITLE - English center
     ty = H - 130
     c.setStrokeColor(Color(1,1,1,0.4)); c.setLineWidth(1.2)
     c.line(STRIPE_W+20, ty+30, STRIPE_W+20+50, ty+30)
@@ -227,17 +228,17 @@ def p1_cover(c, data):
     tc(c, 'PLAN', W/2, ty-30, 'P-Bold', 48, GREEN_MID)
     tc(c, 'Personalized Meal Plan', W/2, ty-55, 'P-Reg', 10, Color(1,1,1,0.6))
     
-    # BOTTOM ZONE - Like workout PDF
+    # BOTTOM ZONE
     by = 130
     
-    # Client card
+    # Client card - Label LEFT (English), Name RIGHT (Arabic)
     rrect(c, STRIPE_W+16, by, W-STRIPE_W-32, 54, 6, Color(0,0,0,0.78), GREEN_MID, 1.2)
     fill_rect(c, STRIPE_W+16, by, 4, 54, GREEN_MID)
-    tl(c, 'CLIENT', STRIPE_W+28, by+40, 'P-Light', 7, GREEN_LIGHT)
-    tl(c, data.get('client_name', 'CLIENT'), STRIPE_W+28, by+16, 'P-Bold', 28, WHITE)
-    tr(c, data.get('goal', 'FITNESS'), W-24, by+30, 'P-Reg', 8.5, GREEN_MID)
+    tl(c, 'CLIENT', STRIPE_W+28, by+40, 'P-Light', 7, GREEN_LIGHT)        # English label - LEFT
+    tr(c, data.get('client_name', 'CLIENT'), W-24, by+16, 'P-Bold', 28, WHITE)  # Arabic name - RIGHT
+    tr(c, data.get('goal', 'FITNESS'), W-24, by+30, 'P-Reg', 8.5, GREEN_MID)    # Arabic goal - RIGHT
     
-    # Three info pills - UNDER client card
+    # Three info pills
     pw = (W - STRIPE_W - 36) / 3 - 5
     pills = [
         ('DURATION', data.get('duration', '12 WEEKS')),
@@ -247,10 +248,14 @@ def p1_cover(c, data):
     for i, (lbl, val) in enumerate(pills):
         px = STRIPE_W + 16 + i * (pw + 7.5)
         rrect(c, px, by-58, pw, 50, 4, Color(0,0,0,0.70), GOLD2, 0.6)
-        tl(c, lbl, px+10, by-24, 'P-Light', 7, GRAY_LIGHT)
-        tl(c, val, px+10, by-44, 'P-Bold', 12, GREEN_MID)
+        tl(c, lbl, px+10, by-24, 'P-Light', 7, GRAY_LIGHT)   # English label - LEFT
+        # Check if value is Arabic
+        if any('\u0600' <= c2 <= '\u06ff' for c2 in str(val)):
+            tr(c, val, px+pw-10, by-44, 'P-Bold', 12, GREEN_MID)  # Arabic - RIGHT
+        else:
+            tl(c, val, px+10, by-44, 'P-Bold', 12, GREEN_MID)     # English - LEFT
     
-    # Footer
+    # Footer - English
     fill_rect(c, 0, 0, W, 40, Color(0,0,0,0.88))
     hline(c, 0, 40, W, GREEN_MID, 0.8)
     tl(c, '@coach.teka1', STRIPE_W+16, 15, 'P-Reg', 8, GREEN_MID)
@@ -289,14 +294,23 @@ def p2_profile(c, data):
         
         rrect(c, ix, iy-42, bw, 40, 5, WHITE, GREEN_DIM, 0.3)
         fill_rect(c, ix, iy-42, 3, 40, GREEN)
-        tl(c, lbl, ix+10, iy-14, 'P-Light', 8, GRAY)
-        tr(c, val, ix+bw-10, iy-14, 'P-Bold', 14, BLACK)
+        tl(c, lbl, ix+10, iy-14, 'P-Light', 8, GRAY)  # English label - LEFT
+        
+        # Check if value is Arabic
+        if any('\u0600' <= c2 <= '\u06ff' for c2 in str(val)):
+            tr(c, val, ix+bw-10, iy-14, 'P-Bold', 14, BLACK)  # Arabic - RIGHT
+        else:
+            tl(c, val, ix+10, iy-14, 'P-Bold', 14, BLACK)     # English - LEFT
     
     ny = py - 120
     if data.get('notes'):
         rrect(c, x, ny-42, cw, 40, 5, WHITE, GREEN_DIM, 0.4)
-        tl(c, 'COACH NOTES:', x+10, ny-14, 'P-Bold', 10, GREEN)
-        tr(c, data.get('notes', '')[:70], x+cw-10, ny-14, 'P-Reg', 10, GRAY)
+        tl(c, 'COACH NOTES:', x+10, ny-14, 'P-Bold', 10, GREEN)  # English - LEFT
+        notes_text = data.get('notes', '')
+        if any('\u0600' <= c2 <= '\u06ff' for c2 in str(notes_text)):
+            tr(c, notes_text[:70], x+cw-10, ny-14, 'P-Reg', 10, GRAY)  # Arabic - RIGHT
+        else:
+            tl(c, notes_text[:70], x+10, ny-14, 'P-Reg', 10, GRAY)     # English - LEFT
         ny -= 52
     
     my = ny - 60
@@ -320,6 +334,7 @@ def p2_profile(c, data):
         tc(c, unit, mx + mw/2, my-52, 'P-Light', 7, GRAY)
     
     c.showPage()
+
 
 # ═══════════════════════════════════════════════
 # PAGE 3 - MEALS
