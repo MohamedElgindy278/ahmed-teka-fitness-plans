@@ -4,17 +4,20 @@ from nutrition_generator import generate_nutrition_pdf
 
 st.set_page_config(page_title='AHMED TEKA - Nutrition Plan', page_icon='🥗', layout='wide')
 
+# Force Arabic font support on cloud
 st.markdown("""
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
-*{font-family:'Cairo',sans-serif!important}
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+*{font-family:'Tajawal',sans-serif!important}
+html, body, [class*="css"] {font-family:'Tajawal',sans-serif!important}
 .main-header{background:linear-gradient(135deg,#F8F8F8,#E8F5F0);padding:1.5rem;border-radius:15px;text-align:center;border:2px solid #2E7D64;margin-bottom:1.5rem}
 .main-header h1{color:#2E7D64;font-size:2rem;font-weight:900;margin:0}
 .main-header p{color:#555;margin:0.3rem 0 0 0}
 .stButton>button{background:linear-gradient(135deg,#2E7D64,#4CAF50);color:#FFF;font-weight:700;font-size:1.2rem;padding:1rem;border-radius:10px;border:none;width:100%}
 .stButton>button:hover{background:linear-gradient(135deg,#4CAF50,#81C784)}
 label{color:#2E7D64!important;font-weight:600!important}
-input,textarea,select{background-color:#FFF!important;color:#1A1A1A!important;border:2px solid #C8E6C9!important;border-radius:8px!important}
+input,textarea,select{background-color:#FFF!important;color:#1A1A1A!important;border:2px solid #C8E6C9!important;border-radius:8px!important;font-family:'Tajawal',sans-serif!important}
 input:focus,textarea:focus{border-color:#2E7D64!important;box-shadow:0 0 5px rgba(46,125,100,0.3)!important}
 .day-header{background:linear-gradient(135deg,#E8F5F0,#FFF);padding:1rem;border-radius:10px;border-left:5px solid #2E7D64;margin:1rem 0}
 .day-header h4{color:#1B5E20;margin:0}
