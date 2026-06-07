@@ -9,28 +9,37 @@ W, H = A4
 # ═══════════════════════════════════════════════
 # COLORS - White + Green + Gold
 # ═══════════════════════════════════════════════
-BG          = HexColor('#FFFFFF')
-BG_CREAM    = HexColor('#F8F8F8')
-CARD_BG     = HexColor('#F0F7F4')
-GREEN       = HexColor('#2E7D64')
-GREEN_LIGHT = HexColor('#3A9B7A')
+BG_DARK     = HexColor('#0A1F0A')
+BG_WHITE    = HexColor('#FFFFFF')
+BG_CREAM    = HexColor('#F5F7F5')
+CARD_BG     = HexColor('#F0F7F0')
+GREEN_DARK  = HexColor('#1B5E20')
+GREEN       = HexColor('#2E7D32')
+GREEN_LIGHT = HexColor('#4CAF50')
+GREEN_SOFT  = HexColor('#81C784')
+GREEN_DIM   = HexColor('#C8E6C9')
 GOLD        = HexColor('#D4AF37')
-GRAY_DARK   = HexColor('#4A4A4A')
-GRAY        = HexColor('#666666')
+GRAY_DARK   = HexColor('#555555')
+GRAY        = HexColor('#777777')
 GRAY_LIGHT  = HexColor('#999999')
-BLACK_SOFT  = HexColor('#1A1A1A')
 WHITE       = HexColor('#FFFFFF')
-RED_SOFT    = HexColor('#E8D5D5')
-GREEN_DIM   = HexColor('#E8F5F0')
+BLACK_SOFT  = HexColor('#1A1A1A')
 
+# ═══════════════════════════════════════════════
+# LAYOUT CONSTANTS
+# ═══════════════════════════════════════════════
+M           = 24
+HDR_H       = 44
+FTR_H       = 34
+STRIPE_W    = 5
 TOTAL_PAGES = 6
 
 # ═══════════════════════════════════════════════
-# HELPERS
+# PRIMITIVES
 # ═══════════════════════════════════════════════
 
 def fill_bg(c, col=None):
-    c.setFillColor(col or BG)
+    c.setFillColor(col or BG_WHITE)
     c.rect(0, 0, W, H, stroke=0, fill=1)
 
 def fill_rect(c, x, y, w, h, col):
@@ -66,32 +75,70 @@ def tr(c, s, x, y, f='Helvetica', sz=10, col=BLACK_SOFT):
 def hline(c, x, y, w, col=GREEN, lw=1.0):
     c.setStrokeColor(col); c.setLineWidth(lw); c.line(x, y, x+w, y)
 
+def vline(c, x, y0, y1, col=GREEN_DIM, lw=0.5):
+    c.setStrokeColor(col); c.setLineWidth(lw); c.line(x, y0, x, y1)
+
 def circle(c, cx, cy, r, col):
     c.setFillColor(col); c.circle(cx, cy, r, fill=1, stroke=0)
 
-def stripe(c):
-    fill_rect(c, 0, 0, 4, H, GREEN)
+def stripe(c, col=GREEN):
+    fill_rect(c, 0, 0, STRIPE_W, H, col)
 
-def header_footer(c, page, title):
+def grad_v(c, x, y, w, h, c1, c2, n=30):
+    r1,g1,b1 = c1.red, c1.green, c1.blue
+    r2,g2,b2 = c2.red, c2.green, c2.blue
+    sh = h/n
+    for i in range(n):
+        t = i/n
+        c.setFillColor(Color(r1+(r2-r1)*t, g1+(g2-g1)*t, b1+(b2-b1)*t))
+        c.rect(x, y+h-(i+1)*sh, w, sh+0.6, stroke=0, fill=1)
+
+def wrap(c, text, x, y, maxw, f, sz, col, lh=None):
+    lh = lh or sz * 1.55
+    c.setFillColor(col); c.setFont(f, sz)
+    for para in str(text).split('\n\n'):
+        words = para.replace('\n', ' ').split()
+        line = []
+        for word in words:
+            if c.stringWidth(' '.join(line + [word]), f, sz) <= maxw:
+                line.append(word)
+            else:
+                if line: c.drawString(x, y, ' '.join(line)); y -= lh
+                line = [word]
+        if line: c.drawString(x, y, ' '.join(line)); y -= lh
+        y -= lh * 0.35
+    return y
+
+def content_area():
+    x = STRIPE_W + M
+    w = W - x - M
+    return x, H - HDR_H - M, w
+
+# ═══════════════════════════════════════════════
+# CHROME (Header + Footer)
+# ═══════════════════════════════════════════════
+
+def chrome(c, section, pgnum, data, accent=GREEN):
+    stripe(c, GREEN)
     # Header
-    fill_rect(c, 0, H-36, W, 36, BG_CREAM)
-    hline(c, 0, H-36, W, GREEN, 0.8)
-    tl(c, 'AHMED TEKA', 16, H-24, 'Helvetica-Bold', 10, GREEN)
-    tc(c, title, W/2, H-24, 'Helvetica', 8, GRAY)
-    tr(c, 'Nutrition Plan', W-16, H-24, 'Helvetica-Bold', 10, GOLD)
+    fill_rect(c, 0, H-HDR_H, W, HDR_H, BG_CREAM)
+    hline(c, 0, H-HDR_H, W, GREEN, 1.0)
+    tl(c, 'AHMED', STRIPE_W+12, H-HDR_H+17, 'Helvetica-Bold', 13, GREEN)
+    tl(c, 'TEKA', STRIPE_W+68, H-HDR_H+17, 'Helvetica-Bold', 13, GRAY_DARK)
+    tc(c, section, W/2, H-HDR_H+17, 'Helvetica', 8.5, GRAY)
     # Footer
-    fill_rect(c, 0, 0, W, 28, BG_CREAM)
-    hline(c, 0, 28, W, GREEN, 0.6)
-    tl(c, '@coach.teka1', 16, 9, 'Helvetica', 7, GRAY)
-    tc(c, '01033047057', W/2, 9, 'Helvetica', 7, GRAY)
-    tr(c, f'{page} / {TOTAL_PAGES}', W-16, 9, 'Helvetica-Bold', 8, GREEN)
+    fill_rect(c, 0, 0, W, FTR_H, BG_CREAM)
+    hline(c, 0, FTR_H, W, GREEN, 0.7)
+    tl(c, data.get('instagram', '@coach.teka1'), STRIPE_W+12, FTR_H/2-4, 'Helvetica', 7.5, GREEN)
+    tc(c, data.get('phone', '01033047057'), W/2, FTR_H/2-4, 'Helvetica', 7.5, GRAY)
+    tr(c, f'{pgnum} / {TOTAL_PAGES}', W-12, FTR_H/2-4, 'Helvetica-Bold', 8.5, accent)
 
 # ═══════════════════════════════════════════════
 # PAGE 1 - COVER
 # ═══════════════════════════════════════════════
 
 def p1_cover(c, data):
-    fill_bg(c)
+    fill_bg(c, BG_DARK)
     
     # Cover photo
     cover_photo = 'images/AhmedTeka_image1.jpeg'
@@ -99,116 +146,122 @@ def p1_cover(c, data):
         if os.path.exists(cover_photo):
             c.drawImage(cover_photo, 0, 0, W, H, preserveAspectRatio=True)
     except:
-        pass
+        grad_v(c, 0, 0, W, H, BG_DARK, HexColor('#0D2A0D'))
     
-    c.setFillColor(Color(0, 0, 0, alpha=0.5))
+    c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
-    stripe(c)
+    stripe(c, GREEN_LIGHT)
     
     # Top bar
-    fill_rect(c, 0, H-40, W, 40, Color(0,0,0,0.4))
-    tr(c, 'AHMED TEKA', W-16, H-26, 'Helvetica-Bold', 12, GREEN_LIGHT)
+    fill_rect(c, 0, H-52, W, 52, Color(0,0,0,0.85))
+    hline(c, 0, H-52, W, GREEN_LIGHT, 1.2)
+    tl(c, 'AHMED', STRIPE_W+16, H-32, 'Helvetica-Bold', 18, GREEN_LIGHT)
+    tl(c, 'TEKA', STRIPE_W+84, H-32, 'Helvetica-Bold', 18, WHITE)
+    hline(c, STRIPE_W+16, H-40, 100, GREEN_LIGHT, 0.6)
+    tr(c, 'NUTRITION COACH', W-16, H-32, 'Helvetica', 8.5, GRAY_LIGHT)
     
-    # Title
-    ty = H - 120
-    tc(c, 'NUTRITION', W/2, ty + 50, 'Helvetica-Bold', 52, WHITE)
-    tc(c, 'PLAN', W/2, ty, 'Helvetica-Bold', 52, GREEN_LIGHT)
-    tc(c, 'Personalized Meal Plan', W/2, ty - 25, 'Helvetica', 11, Color(1,1,1,0.7))
+    # Main title
+    ty = H - 130
+    c.setStrokeColor(Color(1,1,1,0.3)); c.setLineWidth(1.2)
+    c.line(STRIPE_W+20, ty+30, STRIPE_W+20+50, ty+30)
+    c.line(W-20-50, ty+30, W-20, ty+30)
+    
+    tc(c, 'NUTRITION', W/2, ty+15, 'Helvetica-Bold', 48, WHITE)
+    tc(c, 'PLAN', W/2, ty-25, 'Helvetica-Bold', 48, GREEN_LIGHT)
+    tc(c, 'Personalized Meal Plan', W/2, ty-50, 'Helvetica', 10, Color(1,1,1,0.6))
     
     # Client card
-    cy = ty - 90
-    rrect(c, 20, cy, W-40, 55, 8, Color(0,0,0,0.6), GREEN, 1)
-    tl(c, 'CLIENT', 32, cy+40, 'Helvetica', 7, GRAY_LIGHT)
-    tl(c, data.get('client_name', 'CLIENT'), 32, cy+16, 'Helvetica-Bold', 22, WHITE)
-    tr(c, data.get('goal', 'FITNESS'), W-32, cy+28, 'Helvetica', 9, GREEN_LIGHT)
-
+    cy = ty - 105
+    rrect(c, STRIPE_W+16, cy, W-STRIPE_W-32, 54, 6, Color(0,0,0,0.78), GREEN_LIGHT, 1.0)
+    fill_rect(c, STRIPE_W+16, cy, 4, 54, GREEN_LIGHT)
+    tl(c, 'CLIENT', STRIPE_W+28, cy+40, 'Helvetica', 7, GREEN_SOFT)
+    tl(c, data.get('client_name', 'CLIENT'), STRIPE_W+28, cy+16, 'Helvetica-Bold', 28, WHITE)
+    tr(c, data.get('goal', 'FITNESS'), W-24, cy+30, 'Helvetica', 8.5, GREEN_LIGHT)
+    
     # Info pills
     by = cy - 10
-    pw = (W - 40) / 3 - 5
+    pw = (W - STRIPE_W - 36) / 3 - 5
     pills = [
-    ('DURATION', data.get('duration', '12 WEEKS')),
-    ('MEALS', data.get('meals_count', '4 MEALS')),
-    ('START', data.get('start_date', 'JUNE 2026')),
+        ('DURATION', data.get('duration', '12 WEEKS')),
+        ('MEALS', data.get('meals_count', '4 MEALS')),
+        ('START', data.get('start_date', 'JUNE 2026')),
     ]
     for i, (lbl, val) in enumerate(pills):
-        px = 20 + i * (pw + 7.5)
+        px = STRIPE_W + 16 + i * (pw + 7.5)
         rrect(c, px, by-58, pw, 50, 4, Color(0,0,0,0.70), GOLD, 0.6)
         tl(c, lbl, px+10, by-24, 'Helvetica', 7, GRAY_LIGHT)
         tl(c, val, px+10, by-44, 'Helvetica-Bold', 12, GREEN_LIGHT)
-
+    
     # Footer
     fill_rect(c, 0, 0, W, 40, Color(0,0,0,0.88))
-    hline(c, 0, 40, W, GREEN, 0.8)
-    tl(c, data.get('instagram', '@coach.teka1'), 20, 15, 'Helvetica', 8, GREEN_LIGHT)
+    hline(c, 0, 40, W, GREEN_LIGHT, 0.8)
+    tl(c, data.get('instagram', '@coach.teka1'), STRIPE_W+16, 15, 'Helvetica', 8, GREEN_LIGHT)
     tc(c, data.get('phone', '01033047057'), W/2, 15, 'Helvetica', 8, GRAY_LIGHT)
-    tr(c, f'Coach {data.get("coach_name", "AHMED TEKA")}', W-20, 15, 'Helvetica-Bold', 9, GREEN_LIGHT)
-
+    tr(c, f'Coach {data.get("coach_name", "AHMED TEKA")}', W-14, 15, 'Helvetica-Bold', 9, GREEN_LIGHT)
+    
     c.showPage()
 
 # ═══════════════════════════════════════════════
-# PAGE 2 - PROFILE
+# PAGE 2 - PROFILE & MACROS
 # ═══════════════════════════════════════════════
 
 def p2_profile(c, data):
     fill_bg(c, BG_CREAM)
-    header_footer(c, 2, 'CLIENT PROFILE')
-    stripe(c)
+    chrome(c, 'CLIENT PROFILE', 2, data)
+    x, y, cw = content_area()
     
-    x = 20
-    y = H - 70
-    cw = W - 40
+    tc(c, 'CLIENT PROFILE', x + cw/2, y - 10, 'Helvetica-Bold', 26, GREEN)
+    tc(c, 'Personal Information & Macros', x + cw/2, y - 32, 'Helvetica', 10, GRAY)
+    hline(c, x, y - 40, cw, GREEN, 1.0)
     
-    tc(c, 'CLIENT PROFILE', W/2, y, 'Helvetica-Bold', 24, GREEN)
-    hline(c, x, y-10, cw, GOLD, 1.2)
-    y -= 35
-    
-    # Info cards
+    # Info cards 2x3
+    py = y - 60
     info_items = [
-        ('Full Name', data.get('full_name', 'N/A')),
-        ('Age', data.get('age', 'N/A')),
-        ('Weight', data.get('weight', 'N/A')),
-        ('Height', data.get('height', 'N/A')),
-        ('Goal', data.get('goal', 'N/A')),
+        ('FULL NAME', data.get('full_name', 'N/A')),
+        ('AGE', data.get('age', 'N/A')),
+        ('WEIGHT', data.get('weight', 'N/A')),
+        ('HEIGHT', data.get('height', 'N/A')),
+        ('GOAL', data.get('goal', 'N/A')),
     ]
     
-    bw = (cw-20)/2
+    bw = (cw - 15) / 2
     for i, (lbl, val) in enumerate(info_items):
         col = i % 2
         row = i // 2
-        cx = x + col*(bw+10)
-        cy = y - row*55
+        ix = x + col * (bw + 15)
+        iy = py - row * 55
         
-        rrect(c, cx, cy-40, bw, 42, 6, WHITE, GREEN_DIM, 0.3)
-        tl(c, lbl, cx+10, cy-12, 'Helvetica', 7, GRAY)
-        tl(c, str(val), cx+10, cy-30, 'Helvetica-Bold', 12, BLACK_SOFT)
-    
-    y -= 175
+        rrect(c, ix, iy-42, bw, 40, 6, WHITE, GREEN_DIM, 0.3)
+        fill_rect(c, ix, iy-42, 3, 40, GREEN)
+        tl(c, lbl, ix+12, iy-14, 'Helvetica', 7, GRAY)
+        tl(c, str(val), ix+12, iy-32, 'Helvetica-Bold', 13, BLACK_SOFT)
     
     # Notes
-    if data.get('notes'):
-        rrect(c, x, y-45, cw, 42, 6, WHITE, GOLD, 0.5)
-        tl(c, 'COACH NOTES', x+10, y-15, 'Helvetica-Bold', 9, GREEN)
-        tl(c, str(data.get('notes', ''))[:80], x+10, y-32, 'Helvetica', 8, GRAY)
-        y -= 55
+    ny = py - 130
+    rrect(c, x, ny-45, cw, 42, 6, WHITE, GREEN_DIM, 0.5)
+    tl(c, 'COACH NOTES', x+12, ny-16, 'Helvetica-Bold', 9, GREEN)
+    tl(c, str(data.get('notes', ''))[:90], x+12, ny-33, 'Helvetica', 8, GRAY)
     
     # Macros section
-    tc(c, 'DAILY MACRONUTRIENTS', W/2, y, 'Helvetica-Bold', 16, GREEN)
-    hline(c, x, y-8, cw, GOLD, 0.8)
-    y -= 30
+    my = ny - 65
+    tc(c, 'DAILY MACRONUTRIENTS', x + cw/2, my, 'Helvetica-Bold', 16, GREEN)
+    hline(c, x, my-8, cw, GOLD, 0.8)
     
     macros = [
-        ('PROTEIN', data.get('protein_g', '0'), 'g/day', GREEN),
+        ('MEALS/DAY', data.get('main_meals', '4'), 'meals', GREEN),
+        ('PROTEIN', data.get('protein_g', '0'), 'g/day', GREEN_LIGHT),
         ('CARBS', data.get('carbs_g', '0'), 'g/day', GOLD),
-        ('FAT', data.get('fat_g', '0'), 'g/day', GREEN_LIGHT),
+        ('FAT', data.get('fat_g', '0'), 'g/day', GREEN_SOFT),
     ]
     
-    mw = (cw-30)/3
+    mw = (cw - 30) / 4
     for i, (lbl, val, unit, color) in enumerate(macros):
-        mx = x + i*(mw+10)
-        rrect(c, mx, y-55, mw, 52, 8, WHITE, color, 1)
-        tc(c, lbl, mx+mw/2, y-15, 'Helvetica-Bold', 9, color)
-        tc(c, val, mx+mw/2, y-35, 'Helvetica-Bold', 20, BLACK_SOFT)
-        tc(c, unit, mx+mw/2, y-45, 'Helvetica', 7, GRAY)
+        mx = x + i * (mw + 10)
+        rrect(c, mx, my-65, mw, 58, 8, WHITE, color, 1)
+        circle(c, mx + mw/2, my-22, 18, color)
+        tc(c, val, mx + mw/2, my-27, 'Helvetica-Bold', 14, WHITE)
+        tc(c, lbl, mx + mw/2, my-45, 'Helvetica', 7, GRAY)
+        tc(c, unit, mx + mw/2, my-55, 'Helvetica', 6, GRAY)
     
     c.showPage()
 
@@ -218,57 +271,68 @@ def p2_profile(c, data):
 
 def p3_meals(c, data):
     fill_bg(c, BG_CREAM)
-    header_footer(c, 3, 'MEAL PLAN')
-    stripe(c)
+    chrome(c, 'DAILY MEAL PLAN', 3, data)
+    x, y, cw = content_area()
     
-    x = 20
-    y = H - 65
-    cw = W - 40
+    # Subtle food pattern background
+    c.saveState()
+    c.setStrokeColor(Color(0.3, 0.5, 0.3, 0.03))
+    c.setLineWidth(0.3)
+    for px in range(30, int(W), 40):
+        for py in range(30, int(H), 40):
+            c.circle(px, py, 2, fill=0, stroke=1)
+    c.restoreState()
     
-    # Arabic title
-    tc(c, 'خطة الوجبات اليومية', W/2, y, 'Helvetica-Bold', 22, GREEN)
-    hline(c, x, y-8, cw, GOLD, 1)
-    y -= 30
+    tc(c, 'DAILY MEAL PLAN', x + cw/2, y - 10, 'Helvetica-Bold', 24, GREEN)
+    tc(c, 'خطة الوجبات اليومية', x + cw/2, y - 30, 'Helvetica', 12, GRAY)
+    hline(c, x, y - 38, cw, GREEN, 1.0)
     
     meals = data.get('meals', [])
-    food_icons = ['🍳', '💪', '🍗', '🥗', '🍝', '🥤']
+    food_icons = ['🥣', '💪', '🍗', '🥗', '🍝', '🥤']
     
+    my = y - 60
     for i, meal in enumerate(meals[:6]):
         icon = food_icons[i] if i < len(food_icons) else '🍽️'
-        mh = 105
+        mh = 110
         
-        rrect(c, x, y-mh, cw, mh-3, 8, WHITE, GREEN_DIM, 0.3)
+        rrect(c, x, my-mh, cw, mh-3, 8, WHITE, GREEN_DIM, 0.3)
+        fill_rect(c, x, my-mh, 4, mh, GREEN)
         
         # Icon circle
-        circle(c, 40, y-22, 16, GREEN_DIM)
-        tc(c, icon, 40, y-25, 'Helvetica', 14, BLACK_SOFT)
+        circle(c, x+30, my-24, 18, GREEN_DIM)
+        tc(c, icon, x+30, my-27, 'Helvetica', 16, BLACK_SOFT)
         
-        # Meal name
-        tl(c, f'Meal {i+1}: {meal.get("name", "")}', 62, y-12, 'Helvetica-Bold', 11, BLACK_SOFT)
-        tl(c, meal.get('type', ''), 62, y-24, 'Helvetica', 8, GRAY)
+        # Meal name & type
+        tl(c, str(meal.get('name', '')), x+56, my-14, 'Helvetica-Bold', 12, BLACK_SOFT)
+        tl(c, str(meal.get('type', '')), x+56, my-26, 'Helvetica', 8, GRAY)
         
         # Calories
-        tl(c, f'{meal.get("calories", "0")} kcal', 62, y-40, 'Helvetica-Bold', 16, GREEN)
+        tl(c, f'{meal.get("calories", "0")} kcal', x+56, my-42, 'Helvetica-Bold', 18, GREEN)
         
         # Macros
-        tl(c, f'P: {meal.get("protein", "0")}g | C: {meal.get("carbs", "0")}g | F: {meal.get("fat", "0")}g', 62, y-52, 'Helvetica', 8, GRAY)
+        tl(c, f'P: {meal.get("protein", "0")}g  C: {meal.get("carbs", "0")}g  F: {meal.get("fat", "0")}g', x+56, my-54, 'Helvetica', 8, GRAY)
         
-        # Ingredients
+        # Ingredients with bullets
         ingredients = meal.get('ingredients', [])
-        ing_text = ' | '.join(ingredients[:4]) if isinstance(ingredients, list) else str(ingredients)
-        tl(c, ing_text[:80], 62, y-64, 'Helvetica', 7, GRAY)
+        ing_y = my - 68
+        if isinstance(ingredients, list):
+            for ing in ingredients[:4]:
+                tl(c, f'• {ing}', x+56, ing_y, 'Helvetica', 8, GRAY)
+                ing_y -= 11
+        else:
+            tl(c, f'• {str(ingredients)[:60]}', x+56, ing_y, 'Helvetica', 8, GRAY)
         
         # Alternative
         alt = meal.get('alternative', '')
         if alt:
-            tl(c, f'🔄 Alternative: {str(alt)[:70]}', 62, y-78, 'Helvetica', 7, GREEN)
+            tl(c, f'🔄 Alternative: {str(alt)[:65]}', x+56, ing_y-4, 'Helvetica', 7, GREEN)
         
-        y -= mh + 4
+        my -= mh + 4
     
     # Total calories
-    if y > 80:
-        rrect(c, x, y-40, cw, 36, 8, GREEN_DIM, GREEN, 1)
-        tc(c, f'Total Daily Calories: {data.get("total_calories", "0")} kcal', W/2, y-18, 'Helvetica-Bold', 14, GREEN)
+    if my > FTR_H + 60:
+        rrect(c, x, my-40, cw, 36, 8, GREEN_DIM, GREEN, 1.2)
+        tc(c, f'Total: {data.get("total_calories", "0")} kcal / day', x + cw/2, my-18, 'Helvetica-Bold', 14, GREEN)
     
     c.showPage()
 
@@ -278,69 +342,70 @@ def p3_meals(c, data):
 
 def p4_guidelines(c, data):
     fill_bg(c, BG_CREAM)
-    header_footer(c, 4, 'GUIDELINES')
-    stripe(c)
+    chrome(c, 'GUIDELINES & SUPPLEMENTS', 4, data)
+    x, y, cw = content_area()
     
-    x = 20
-    y = H - 65
-    cw = W - 40
-    
-    tc(c, 'DAILY GUIDELINES', W/2, y, 'Helvetica-Bold', 22, GREEN)
-    hline(c, x, y-8, cw, GOLD, 1)
-    y -= 30
+    tc(c, 'DAILY GUIDELINES', x + cw/2, y - 10, 'Helvetica-Bold', 24, GREEN)
+    hline(c, x, y - 18, cw, GREEN, 1.0)
     
     # Water card (big)
-    rrect(c, x, y-55, cw, 50, 8, WHITE, GREEN, 1.5)
-    tc(c, '💧 DAILY HYDRATION', W/2, y-18, 'Helvetica-Bold', 12, GREEN)
-    tc(c, f'{data.get("water", "4-6 L")} of water per day', W/2, y-38, 'Helvetica-Bold', 18, BLACK_SOFT)
-    y -= 65
+    wy = y - 40
+    rrect(c, x, wy-55, cw, 50, 8, WHITE, GREEN, 1.5)
+    fill_rect(c, x, wy-55, 4, 50, GREEN)
+    tc(c, '💧 DAILY HYDRATION', x + cw/2, wy-18, 'Helvetica-Bold', 12, GREEN)
+    tc(c, f'{data.get("water", "4-6 L")} of water per day', x + cw/2, wy-38, 'Helvetica-Bold', 20, BLACK_SOFT)
     
-    # Guidelines 2x2 grid
+    # Guidelines 2x2
+    gy = wy - 70
+    gw = (cw - 15) / 2
     guidelines = [
-        ('⏰ Meal Timing', data.get('meal_timing', '2-3 hours between meals')),
-        ('⚖️ Food Weighing', data.get('food_weighing', 'Weigh after cooking')),
-        ('🥤 Drinks', data.get('drinks', 'No sugary drinks')),
-        ('🚫 Avoid', data.get('sweets', 'No processed foods')),
+        ('⏰ Meal Timing', data.get('meal_timing', '')),
+        ('⚖️ Food Weighing', data.get('food_weighing', '')),
+        ('🥤 Drinks', data.get('drinks', '')),
+        ('🚫 Restricted', data.get('sweets', '')),
     ]
     
-    gw = (cw-15)/2
     for i, (title, body) in enumerate(guidelines):
         col = i % 2
         row = i // 2
-        gx = x + col*(gw+10)
-        gy = y - row*60
+        gx = x + col * (gw + 15)
+        gyy = gy - row * 60
         
-        rrect(c, gx, gy-48, gw, 44, 6, WHITE, GOLD, 0.4)
-        tl(c, title, gx+8, gy-18, 'Helvetica-Bold', 10, GREEN)
-        tl(c, str(body)[:50], gx+8, gy-34, 'Helvetica', 8, GRAY)
+        rrect(c, gx, gyy-48, gw, 44, 6, WHITE, GREEN_DIM, 0.3)
+        fill_rect(c, gx, gyy-48, 3, 44, GREEN)
+        tl(c, title, gx+10, gyy-18, 'Helvetica-Bold', 10, GREEN)
+        wrap(c, str(body)[:55], gx+10, gyy-32, gw-15, 'Helvetica', 7.5, GRAY, lh=11)
     
-    y -= 140
+    # Omega
+    oy = gy - 140
+    rrect(c, x, oy-34, cw, 30, 6, WHITE, GREEN_DIM, 0.5)
+    tl(c, f'🐟 Omega-3: {data.get("omega", "")}', x+12, oy-14, 'Helvetica', 9, GREEN)
     
     # Supplements
-    tc(c, '💊 SUPPLEMENTS', W/2, y, 'Helvetica-Bold', 16, GREEN)
-    hline(c, x, y-8, cw, GOLD, 0.6)
-    y -= 25
+    sy = oy - 50
+    tc(c, 'SUPPLEMENTS', x + cw/2, sy, 'Helvetica-Bold', 14, GREEN)
+    hline(c, x, sy-6, cw, GOLD, 0.5)
     
     supplements = data.get('supplements', [])
-    for i, sup in enumerate(supplements[:4]):
-        rrect(c, x, y-30, cw, 26, 5, WHITE, GREEN_DIM, 0.3)
-        circle(c, x+18, y-17, 10, GREEN)
-        tc(c, str(i+1), x+18, y-20, 'Helvetica-Bold', 8, WHITE)
-        tl(c, sup.get('name', ''), x+34, y-10, 'Helvetica-Bold', 10, BLACK_SOFT)
-        tl(c, f'{sup.get("dose", "")} - {sup.get("benefit", "")}'[:60], x+34, y-22, 'Helvetica', 7, GRAY)
-        y -= 35
+    for i, sup in enumerate(supplements[:3]):
+        sr = sy - 20 - i * 35
+        rrect(c, x, sr-26, cw, 24, 5, WHITE, GREEN_DIM, 0.3)
+        circle(c, x+20, sr-13, 10, GREEN)
+        tc(c, str(i+1), x+20, sr-16, 'Helvetica-Bold', 7, WHITE)
+        tl(c, sup.get('name', ''), x+36, sr-8, 'Helvetica-Bold', 10, BLACK_SOFT)
+        tl(c, f'{sup.get("dose", "")} — {sup.get("benefit", "")}'[:55], x+36, sr-20, 'Helvetica', 7, GRAY)
     
     # Pre-workout
-    if y > 80:
-        tc(c, '⚡ PRE-WORKOUT PROTOCOL', W/2, y, 'Helvetica-Bold', 14, GREEN)
-        hline(c, x, y-6, cw, GOLD, 0.5)
-        y -= 20
+    py2 = sy - 20 - len(supplements) * 35 - 15
+    if py2 > FTR_H + 60:
+        tc(c, 'PRE-WORKOUT PROTOCOL', x + cw/2, py2, 'Helvetica-Bold', 12, GREEN)
+        hline(c, x, py2-5, cw, GOLD, 0.4)
         
         preworkout = data.get('preworkout', [])
-        for pw in preworkout[:2]:
-            rrect(c, x, y-28, cw, 24, 5, GREEN_DIM, GREEN, 0.3)
-            tl(c, f'{pw.get("time", "")}: {pw.get("item", "")}'[:70], x+10, y-14, 'Helvetica', 8, BLACK_SOFT)
-            y -= 32
+        for i, pw in enumerate(preworkout[:2]):
+            pwy = py2 - 20 - i * 30
+            rrect(c, x, pwy-22, cw, 20, 4, GREEN_DIM, GREEN, 0.2)
+            tl(c, f'{pw.get("time", "")}: {pw.get("item", "")}'[:70], x+10, pwy-10, 'Helvetica', 8, BLACK_SOFT)
     
     c.showPage()
 
@@ -350,51 +415,47 @@ def p4_guidelines(c, data):
 
 def p5_recipes(c, data):
     fill_bg(c, BG_CREAM)
-    header_footer(c, 5, 'RECIPES')
-    stripe(c)
+    chrome(c, 'RECIPE LIBRARY', 5, data)
+    x, y, cw = content_area()
     
-    x = 20
-    y = H - 65
-    cw = W - 40
-    
-    tc(c, 'RECIPE LIBRARY', W/2, y, 'Helvetica-Bold', 22, GREEN)
-    hline(c, x, y-8, cw, GOLD, 1)
-    y -= 30
+    tc(c, 'RECIPE LIBRARY', x + cw/2, y - 10, 'Helvetica-Bold', 24, GREEN)
+    tc(c, 'وصفات صحية للبرنامج', x + cw/2, y - 30, 'Helvetica', 11, GRAY)
+    hline(c, x, y - 38, cw, GREEN, 1.0)
     
     recipes = data.get('recipes', [])
-    rw = (cw-15)/3
+    rw = (cw - 20) / 3
     
+    ry = y - 60
     for i, recipe in enumerate(recipes[:6]):
         col = i % 3
         row = i // 3
-        rx = x + col*(rw+7)
-        ry = y - row*125
+        rx = x + col * (rw + 10)
+        ryy = ry - row * 125
         
-        rrect(c, rx, ry-110, rw, 106, 8, WHITE, GREEN_DIM, 0.3)
+        rrect(c, rx, ryy-110, rw, 106, 8, WHITE, GREEN_DIM, 0.3)
         
         # Icon
-        circle(c, rx+rw/2, ry-40, 25, GREEN_DIM)
-        circle(c, rx+rw/2, ry-40, 18, GREEN)
-        tc(c, '🍽️', rx+rw/2, ry-44, 'Helvetica', 16, WHITE)
+        circle(c, rx + rw/2, ryy-42, 25, GREEN_DIM)
+        circle(c, rx + rw/2, ryy-42, 18, GREEN)
+        tc(c, '🍳', rx + rw/2, ryy-46, 'Helvetica', 16, WHITE)
         
-        tc(c, recipe.get('name', 'Recipe')[:20], rx+rw/2, ry-72, 'Helvetica-Bold', 9, BLACK_SOFT)
-        tc(c, recipe.get('desc', '')[:30], rx+rw/2, ry-84, 'Helvetica', 7, GRAY)
+        tc(c, str(recipe.get('name', ''))[:18], rx + rw/2, ryy-72, 'Helvetica-Bold', 9, BLACK_SOFT)
+        tc(c, str(recipe.get('desc', ''))[:25], rx + rw/2, ryy-84, 'Helvetica', 7, GRAY)
         
         # Watch button
-        rrect(c, rx+8, ry-106, rw-16, 18, 4, GREEN)
-        tc(c, '▶ Watch Recipe', rx+rw/2, ry-98, 'Helvetica-Bold', 7, WHITE)
+        rrect(c, rx+10, ryy-105, rw-20, 18, 4, GREEN)
+        tc(c, 'Watch Recipe', rx + rw/2, ryy-97, 'Helvetica-Bold', 7, WHITE)
         
         link = recipe.get('link', '#')
         if link and link != '#':
-            c.linkURL(link, (rx+8, ry-106, rx+rw-8, ry-88))
-    
-    y -= 280
+            c.linkURL(link, (rx+10, ryy-105, rx+rw-10, ryy-87))
     
     # Quote
-    if y > 70:
-        rrect(c, x, y-50, cw, 46, 8, GREEN_DIM, GREEN, 1)
-        tc(c, '"Consistency is the key to success."', W/2, y-16, 'Helvetica-Bold', 12, GREEN)
-        tc(c, f'— {data.get("coach_name", "AHMED TEKA")}', W/2, y-34, 'Helvetica', 10, GRAY)
+    qy = ry - 280
+    if qy > FTR_H + 60:
+        rrect(c, x, qy-50, cw, 46, 8, GREEN_DIM, GREEN, 1)
+        tc(c, '"Consistency is the key to lasting results."', x + cw/2, qy-18, 'Helvetica-Bold', 11, GREEN)
+        tc(c, f'— {data.get("coach_name", "AHMED TEKA")}', x + cw/2, qy-34, 'Helvetica', 9, GRAY)
     
     c.showPage()
 
@@ -403,7 +464,7 @@ def p5_recipes(c, data):
 # ═══════════════════════════════════════════════
 
 def p6_coach(c, data):
-    fill_bg(c)
+    fill_bg(c, BG_DARK)
     
     # Coach photo
     coach_photo = 'images/AhmedTeka_image3.jpeg'
@@ -411,50 +472,62 @@ def p6_coach(c, data):
         if os.path.exists(coach_photo):
             c.drawImage(coach_photo, 0, 0, W, H, preserveAspectRatio=True)
     except:
-        pass
+        grad_v(c, 0, 0, W, H, BG_DARK, HexColor('#0D2A0D'))
     
-    c.setFillColor(Color(0, 0, 0, alpha=0.5))
+    c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
-    stripe(c)
+    stripe(c, GREEN_LIGHT)
     
     # Top bar
-    fill_rect(c, 0, H-38, W, 38, Color(0,0,0,0.4))
-    tl(c, 'AHMED TEKA', 16, H-26, 'Helvetica-Bold', 11, GREEN_LIGHT)
-    tr(c, 'YOUR COACH', W-16, H-26, 'Helvetica', 9, GRAY_LIGHT)
+    fill_rect(c, 0, H-50, W, 50, Color(0,0,0,0.85))
+    hline(c, 0, H-50, W, GREEN_LIGHT, 1.0)
+    tl(c, 'AHMED', STRIPE_W+16, H-32, 'Helvetica-Bold', 18, GREEN_LIGHT)
+    tl(c, 'TEKA', STRIPE_W+86, H-32, 'Helvetica-Bold', 18, WHITE)
+    hline(c, STRIPE_W+16, H-39, 106, GREEN_LIGHT, 0.7)
+    tr(c, 'YOUR COACH', W-16, H-32, 'Helvetica', 9, GRAY_LIGHT)
     
     # Center name
-    tc(c, data.get('coach_name', 'AHMED TEKA'), W/2, H/2+10, 'Helvetica-Bold', 42, WHITE)
-    tc(c, 'NUTRITION COACH', W/2, H/2-25, 'Helvetica', 14, GREEN_LIGHT)
+    cy = H * 0.55
+    lw_c = 70
+    c.setStrokeColor(GREEN_LIGHT); c.setLineWidth(1.5)
+    c.line(W/2 - 200, cy + 25, W/2 - 200 + lw_c, cy + 25)
+    c.line(W/2 + 200 - lw_c, cy + 25, W/2 + 200, cy + 25)
+    
+    tc(c, data.get('coach_name', 'AHMED TEKA'), W/2, cy, 'Helvetica-Bold', 48, GREEN_LIGHT)
+    tc(c, 'NUTRITION COACH', W/2, cy-30, 'Helvetica', 14, WHITE)
     
     # Bottom bar
-    fill_rect(c, 0, 0, W, 90, Color(0,0,0,0.6))
-    hline(c, 0, 90, W, GREEN, 1)
-
-    # Contact buttons - lower position
-    btn_w = 140; btn_h = 32
-    total_w = 2*btn_w + 15
-    bx_start = W/2 - total_w/2
-
+    fill_rect(c, 0, 0, W, 90, Color(0,0,0,0.85))
+    hline(c, 0, 90, W, GREEN_LIGHT, 0.8)
+    
+    btn_w = 150; btn_h = 34; gap2 = 15
+    total_btns = 2*btn_w + gap2
+    bx_start = W/2 - total_btns/2
+    
     for i, (lbl, color) in enumerate([
-        (f'@{data.get("instagram", "coach.teka1")}', GREEN),
+        (f'@{data.get("instagram", "coach.teka1")}', GREEN_LIGHT),
         (data.get('phone', '01033047057'), GOLD),
     ]):
-        bx = bx_start + i*(btn_w+15)
-        by = 10
-        rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.5), color, 1)
+        bx = bx_start + i*(btn_w+gap2)
+        by = 15
+        rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.5), color, 1.2)
         tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'Helvetica-Bold', 10, WHITE)
+    
+    tr(c, f'{TOTAL_PAGES} / {TOTAL_PAGES}', W-14, 100, 'Helvetica-Bold', 9, GREEN_LIGHT)
     
     c.showPage()
 
 # ═══════════════════════════════════════════════
-# BUILD
+# BUILD FUNCTION
 # ═══════════════════════════════════════════════
 
 def generate_nutrition_pdf(data):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
-    c.setTitle(f'AHMED TEKA - Nutrition Plan')
+    c.setTitle(f'AHMED TEKA — Nutrition Plan')
     c.setAuthor(data.get('coach_name', 'AHMED TEKA'))
+    c.setSubject('Professional Nutrition Plan')
+    c.setCreator('Ahmed Teka Nutrition Engine')
     
     p1_cover(c, data)
     p2_profile(c, data)
