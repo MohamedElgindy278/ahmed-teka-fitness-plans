@@ -23,6 +23,9 @@ input:focus,textarea:focus{border-color:#2E7D64!important;box-shadow:0 0 5px rgb
 st.markdown('<div class="main-header"><h1>🥗 AHMED TEKA — NUTRITION PLAN</h1><p>Personalized Meal Plan Generator</p></div>', unsafe_allow_html=True)
 
 with st.form('nutrition_form'):
+    # ═══════════════════════════════════
+    # CLIENT INFORMATION
+    # ═══════════════════════════════════
     st.markdown('## 👤 CLIENT INFORMATION')
     
     col1, col2, col3 = st.columns(3)
@@ -41,6 +44,9 @@ with st.form('nutrition_form'):
     
     notes = st.text_area('Coach Notes', 'Customized meal plan for muscle building under Coach Ahmed Teka supervision.', height=70)
     
+    # ═══════════════════════════════════
+    # MACRONUTRIENTS
+    # ═══════════════════════════════════
     st.markdown('---')
     st.markdown('## 📊 MACRONUTRIENTS')
     
@@ -56,6 +62,9 @@ with st.form('nutrition_form'):
     
     total_calories = st.text_input('Total Daily Calories', '2502')
     
+    # ═══════════════════════════════════
+    # MEALS
+    # ═══════════════════════════════════
     st.markdown('---')
     st.markdown('## 🍽️ MEALS')
     
@@ -109,58 +118,67 @@ with st.form('nutrition_form'):
             'alternative': alternative,
         })
     
+    # ═══════════════════════════════════
+    # GUIDELINES & SUPPLEMENTS
+    # ═══════════════════════════════════
     st.markdown('---')
+    st.markdown('## 📋 GUIDELINES & SUPPLEMENTS')
     
-    # Guidelines
-    with st.expander('📋 GUIDELINES & SUPPLEMENTS', expanded=False):
-        meal_timing = st.text_area('Meal Timing', '2-3 hours between meals to boost metabolism and recovery.', height=60)
-        food_weighing = st.text_area('Food Weighing', 'Weigh food after cooking for accurate calorie tracking.', height=60)
-        drinks = st.text_area('Drinks', 'No sugary drinks or sweetened beverages. Only water and unsweetened tea.', height=60)
-        sweets = st.text_area('Restricted Foods', 'Sugar and processed products are prohibited to maintain cortisol levels.', height=60)
-        omega = st.text_input('Omega 3', '3-5g Omega 3 daily distributed across meals')
-        
-        st.markdown('**Supplements**')
-        sup_text = st.text_area('Supplements (name | dose | benefit per line)',
-            'Vitamin D3 | 2000 IU | Immune & bone support\nOmega 3 | Daily | Joint & heart health\nC + Zinc | Daily | Immunity + muscle recovery',
-            height=80)
-        
-        supplements = []
-        for line in sup_text.split('\n'):
-            if '|' in line:
-                parts = line.split('|')
-                supplements.append({'name': parts[0].strip(), 'dose': parts[1].strip(), 'benefit': parts[2].strip() if len(parts) > 2 else ''})
-        
-        st.markdown('**Pre-Workout Protocol**')
-        pw_text = st.text_area('Pre-workout (time | item per line)',
-            '45 min before | 30g protein + 100g dates + fresh pomegranate juice\n30 min before | Cup of black coffee without sugar',
-            height=80)
-        
-        preworkout = []
-        for line in pw_text.split('\n'):
-            if '|' in line:
-                parts = line.split('|')
-                preworkout.append({'time': parts[0].strip(), 'item': parts[1].strip()})
+    meal_timing = st.text_area('Meal Timing', '2-3 hours between meals to boost metabolism and recovery.', height=60)
+    food_weighing = st.text_area('Food Weighing', 'Weigh food after cooking for accurate calorie tracking.', height=60)
+    drinks = st.text_area('Drinks', 'No sugary drinks or sweetened beverages. Only water and unsweetened tea.', height=60)
+    sweets = st.text_area('Restricted Foods', 'Sugar and processed products are prohibited to maintain cortisol levels.', height=60)
+    omega = st.text_input('Omega 3', '3-5g Omega 3 daily distributed across meals')
     
-    # Recipes
-    with st.expander('🍳 RECIPES', expanded=False):
-        recipes = []
-        for i in range(6):
-            st.markdown(f'**Recipe {i+1}**')
-            rc1, rc2 = st.columns([2,1])
-            with rc1:
-                rname = st.text_input(f'Name {i+1}', 
-                    value=['Oatmeal Protein', 'Chicken Breast', 'Healthy Rice', 'Fruit Salad', 'Protein Pack', 'Magic Smoothie'][i],
-                    key=f'rname_{i}')
-            with rc2:
-                rlink = st.text_input(f'Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}')
-            rdesc = st.text_input(f'Description {i+1}', 'Delicious and healthy recipe', key=f'rdesc_{i}')
-            recipes.append({'name': rname, 'desc': rdesc, 'link': rlink})
+    st.markdown('**Supplements**')
+    sup_text = st.text_area('Supplements (name | dose | benefit per line)',
+        'Vitamin D3 | 2000 IU | Immune & bone support\nOmega 3 | Daily | Joint & heart health\nC + Zinc | Daily | Immunity + muscle recovery',
+        height=80)
     
-    # Coach
-    with st.expander('🧑‍🏫 COACH INFO', expanded=False):
-        coach_name = st.text_input('Coach Name', 'AHMED TEKA')
-        instagram = st.text_input('Instagram', '@coach.teka1')
-        phone = st.text_input('Phone', '01033047057')
+    supplements = []
+    for line in sup_text.split('\n'):
+        if '|' in line:
+            parts = line.split('|')
+            supplements.append({'name': parts[0].strip(), 'dose': parts[1].strip(), 'benefit': parts[2].strip() if len(parts) > 2 else ''})
+    
+    st.markdown('**Pre-Workout Protocol**')
+    pw_text = st.text_area('Pre-workout (time | item per line)',
+        '45 min before | 30g protein + 100g dates + fresh pomegranate juice\n30 min before | Cup of black coffee without sugar',
+        height=80)
+    
+    preworkout = []
+    for line in pw_text.split('\n'):
+        if '|' in line:
+            parts = line.split('|')
+            preworkout.append({'time': parts[0].strip(), 'item': parts[1].strip()})
+    
+    # ═══════════════════════════════════
+    # RECIPES
+    # ═══════════════════════════════════
+    st.markdown('---')
+    st.markdown('## 🍳 RECIPES')
+    
+    recipes = []
+    for i in range(6):
+        rc1, rc2 = st.columns([2,1])
+        with rc1:
+            rname = st.text_input(f'Recipe Name {i+1}', 
+                value=['Oatmeal Protein', 'Chicken Breast', 'Healthy Rice', 'Fruit Salad', 'Protein Pack', 'Magic Smoothie'][i],
+                key=f'rname_{i}')
+        with rc2:
+            rlink = st.text_input(f'YouTube Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}')
+        rdesc = st.text_input(f'Description {i+1}', 'Delicious and healthy recipe', key=f'rdesc_{i}')
+        recipes.append({'name': rname, 'desc': rdesc, 'link': rlink})
+    
+    # ═══════════════════════════════════
+    # COACH INFO
+    # ═══════════════════════════════════
+    st.markdown('---')
+    st.markdown('## 🧑‍🏫 COACH INFO')
+    
+    coach_name = st.text_input('Coach Name', 'AHMED TEKA')
+    instagram = st.text_input('Instagram', '@coach.teka1')
+    phone = st.text_input('Phone', '01033047057')
     
     submitted = st.form_submit_button('🥗 GENERATE NUTRITION PLAN PDF', use_container_width=True)
 
