@@ -22,10 +22,19 @@ input:focus,textarea:focus{border-color:#2E7D64!important;box-shadow:0 0 5px rgb
 .section-desc{color:#777;font-size:0.85rem;margin-bottom:1rem}
 .gen-btn>button{background:linear-gradient(135deg,#2E7D64,#D4AF37)!important;font-size:1.4rem!important;padding:1.5rem!important;font-weight:900!important;animation:pulse 2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,125,100,0.4)}70%{box-shadow:0 0 0 20px rgba(46,125,100,0)}100%{box-shadow:0 0 0 0 rgba(46,125,100,0)}}
+.counter-btn>button{background:#E8F5F0!important;color:#2E7D64!important;border:2px solid #2E7D64!important;font-weight:700!important}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-header"><h1>🥗 AHMED TEKA — NUTRITION PLAN</h1><p>Professional · Personalized Meal Plan Generator</p></div>', unsafe_allow_html=True)
+
+# Initialize session states for dynamic counts
+if 'supplements_count' not in st.session_state:
+    st.session_state.supplements_count = 3
+if 'preworkout_count' not in st.session_state:
+    st.session_state.preworkout_count = 2
+if 'recipes_count' not in st.session_state:
+    st.session_state.recipes_count = 6
 
 with st.form('nutrition_form'):
     
@@ -154,60 +163,104 @@ with st.form('nutrition_form'):
     omega = st.text_input('🐟 Omega-3', '5-3 جم أوميجا 3 يومياً موزعاً على الوجبات', help='Omega-3 supplementation guidelines.')
     
     # ═══════════════════════════════════════════════
-    # SUPPLEMENTS
+    # SUPPLEMENTS - DYNAMIC ADD/REMOVE
     # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## 💊 SUPPLEMENTS')
-    st.markdown('<p class="section-desc">Enter supplements (name | dose | benefit per line).</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-desc">Add or remove supplements. Each supplement has: Name, Dose, Benefit.</p>', unsafe_allow_html=True)
     
-    sup_text = st.text_area('Supplements (name | dose | benefit)',
-        'Vitamin D3 | 2000 IU | دعم المناعة والعظام\nOmega 3 | يومياً | صحة المفاصل والقلب\nC + Zinc | يومياً | مناعة + تعافي عضلي',
-        height=80, help='Format: Name | Dose | Benefit. One supplement per line.')
+    # Add/Remove buttons
+    sup_col1, sup_col2, sup_col3 = st.columns([1, 1, 4])
+    with sup_col1:
+        if st.form_submit_button('➕ Add Supplement', use_container_width=True, type='secondary'):
+            st.session_state.supplements_count += 1
+    with sup_col2:
+        if st.form_submit_button('➖ Remove', use_container_width=True, type='secondary') and st.session_state.supplements_count > 1:
+            st.session_state.supplements_count -= 1
     
     supplements = []
-    for line in sup_text.split('\n'):
-        if '|' in line:
-            parts = line.split('|')
-            supplements.append({'name': parts[0].strip(), 'dose': parts[1].strip(), 'benefit': parts[2].strip() if len(parts) > 2 else ''})
+    for i in range(st.session_state.supplements_count):
+        st.markdown(f'**Supplement {i+1}**')
+        sc1, sc2, sc3 = st.columns([2, 1, 2])
+        with sc1:
+            sup_name = st.text_input(f'Name {i+1}',
+                value=['Vitamin D3', 'Omega 3', 'C + Zinc'][i] if i < 3 else '',
+                key=f'sup_name_{i}', help=f'Supplement {i+1} name.')
+        with sc2:
+            sup_dose = st.text_input(f'Dose {i+1}',
+                value=['2000 IU', 'يومياً', 'يومياً'][i] if i < 3 else '',
+                key=f'sup_dose_{i}', help=f'Supplement {i+1} dosage.')
+        with sc3:
+            sup_benefit = st.text_input(f'Benefit {i+1}',
+                value=['دعم المناعة والعظام', 'صحة المفاصل والقلب', 'مناعة + تعافي عضلي'][i] if i < 3 else '',
+                key=f'sup_ben_{i}', help=f'Supplement {i+1} benefit.')
+        
+        if sup_name.strip():
+            supplements.append({'name': sup_name.strip(), 'dose': sup_dose.strip(), 'benefit': sup_benefit.strip()})
     
     # ═══════════════════════════════════════════════
-    # PRE-WORKOUT
+    # PRE-WORKOUT - DYNAMIC ADD/REMOVE
     # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## ⚡ PRE-WORKOUT PROTOCOL')
-    st.markdown('<p class="section-desc">Enter pre-workout items (time | item per line).</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-desc">Add or remove pre-workout items. Each has: Time, Item.</p>', unsafe_allow_html=True)
     
-    pw_text = st.text_area('Pre-workout (time | item)',
-        'قبل 45 دقيقة | 30 جرام بروتين + 100 جرام تمر + عصير رمان طازج\nقبل 30 دقيقة | فنجان قهوة سوداء بدون سكر',
-        height=80, help='Format: Time | Item. One per line.')
+    pw_col1, pw_col2, pw_col3 = st.columns([1, 1, 4])
+    with pw_col1:
+        if st.form_submit_button('➕ Add Pre-Workout', use_container_width=True, type='secondary'):
+            st.session_state.preworkout_count += 1
+    with pw_col2:
+        if st.form_submit_button('➖ Remove', use_container_width=True, type='secondary', key='pw_remove') and st.session_state.preworkout_count > 1:
+            st.session_state.preworkout_count -= 1
     
     preworkout = []
-    for line in pw_text.split('\n'):
-        if '|' in line:
-            parts = line.split('|')
-            preworkout.append({'time': parts[0].strip(), 'item': parts[1].strip()})
+    for i in range(st.session_state.preworkout_count):
+        st.markdown(f'**Pre-Workout Item {i+1}**')
+        pw1, pw2 = st.columns([1, 2])
+        with pw1:
+            pw_time = st.text_input(f'Time {i+1}',
+                value=['قبل 45 دقيقة', 'قبل 30 دقيقة'][i] if i < 2 else '',
+                key=f'pw_time_{i}', help=f'When to take this item.')
+        with pw2:
+            pw_item = st.text_input(f'Item {i+1}',
+                value=['30 جرام بروتين + 100 جرام تمر + عصير رمان طازج', 'فنجان قهوة سوداء بدون سكر'][i] if i < 2 else '',
+                key=f'pw_item_{i}', help=f'What to take.')
+        
+        if pw_time.strip() and pw_item.strip():
+            preworkout.append({'time': pw_time.strip(), 'item': pw_item.strip()})
     
     # ═══════════════════════════════════════════════
-    # RECIPES
+    # RECIPES - DYNAMIC ADD/REMOVE
     # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## 🍳 RECIPES')
-    st.markdown('<p class="section-desc">6 recipe cards for the recipe library page.</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-desc">Add or remove recipe cards. Each recipe has: Name, Description, YouTube Link.</p>', unsafe_allow_html=True)
+    
+    rec_col1, rec_col2, rec_col3 = st.columns([1, 1, 4])
+    with rec_col1:
+        if st.form_submit_button('➕ Add Recipe', use_container_width=True, type='secondary'):
+            st.session_state.recipes_count += 1
+    with rec_col2:
+        if st.form_submit_button('➖ Remove', use_container_width=True, type='secondary', key='rec_remove') and st.session_state.recipes_count > 1:
+            st.session_state.recipes_count -= 1
     
     recipes = []
-    for i in range(6):
+    for i in range(st.session_state.recipes_count):
+        st.markdown(f'**Recipe {i+1}**')
         rc1, rc2, rc3 = st.columns([2, 2, 1])
         with rc1:
-            rname = st.text_input(f'📛 Recipe Name {i+1}',
-                value=['السيرة', 'صدور الدجاج', 'الأرز الصحي', 'سلطة فواكه', 'الباكيج الصحي', 'الوجبة السحرة'][i],
-                key=f'rname_{i}', help=f'Name of recipe {i+1}.')
+            rname = st.text_input(f'Name {i+1}',
+                value=['السيرة', 'صدور الدجاج', 'الأرز الصحي', 'سلطة فواكه', 'الباكيج الصحي', 'الوجبة السحرة'][i] if i < 6 else '',
+                key=f'rname_{i}', help=f'Recipe {i+1} name.')
         with rc2:
-            rdesc = st.text_input(f'📝 Description {i+1}',
-                value=['شوربة احترافي', 'تتبيل مثالي وإتقان', 'طريقة طهي صحية', 'وصفة غنية غذائياً', 'بروتين + طاقة', 'سناكس مستقبلة'][i],
-                key=f'rdesc_{i}', help=f'Short description of recipe {i+1}.')
+            rdesc = st.text_input(f'Description {i+1}',
+                value=['شوربة احترافي', 'تتبيل مثالي وإتقان', 'طريقة طهي صحية', 'وصفة غنية غذائياً', 'بروتين + طاقة', 'سناكس مستقبلة'][i] if i < 6 else '',
+                key=f'rdesc_{i}', help=f'Recipe {i+1} description.')
         with rc3:
-            rlink = st.text_input(f'🔗 Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}', help=f'YouTube link for recipe {i+1}.')
-        recipes.append({'name': rname, 'desc': rdesc, 'link': rlink})
+            rlink = st.text_input(f'Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}', help=f'YouTube link.')
+        
+        if rname.strip():
+            recipes.append({'name': rname.strip(), 'desc': rdesc.strip(), 'link': rlink.strip()})
     
     # ═══════════════════════════════════════════════
     # COACH INFO
