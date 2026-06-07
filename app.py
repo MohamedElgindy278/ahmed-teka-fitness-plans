@@ -229,33 +229,72 @@ wu_protocol = st.text_area('📋 Protocol Rules (One rule per line)',
     height=120, help='Warm-up protocol rules. Each line = one bullet point in the PDF.')
 
 # ═══════════════════════════════════════════════
-# SECTION 6: TIPS (ALL FIELDS VISIBLE)
+# SECTION 6: TIPS (DYNAMIC - ADD/REMOVE)
 # ═══════════════════════════════════════════════
 st.markdown("---")
 st.markdown("## 💡 TIPS & MOTIVATION")
-st.markdown('<p class="section-desc">Appears on Page 7 in a 2×3 grid. Configure 6 tips below.</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-desc">Appears on Page 7 in a 2×3 grid. Add or remove tips as needed.</p>', unsafe_allow_html=True)
 
-tip_cols = st.columns(2)
+# Initialize tips count in session state
+if 'tips_count' not in st.session_state:
+    st.session_state.tips_count = 6
+
+# Add/Remove buttons
+col_add1, col_add2, col_add3 = st.columns([1, 1, 4])
+with col_add1:
+    if st.button('➕ Add Tip', use_container_width=True):
+        st.session_state.tips_count += 1
+        st.rerun()
+with col_add2:
+    if st.button('➖ Remove Tip', use_container_width=True) and st.session_state.tips_count > 1:
+        st.session_state.tips_count -= 1
+        st.rerun()
+
 tips = []
+tip_cols = st.columns(2)
 
-for i in range(6):
+for i in range(st.session_state.tips_count):
     with tip_cols[i % 2]:
-        st.markdown(f'<div class="tip-card"><h4 style="color:#D4AF37;margin:0 0 0.5rem 0">Tip #{i+1}</h4>', unsafe_allow_html=True)
+        st.markdown(f'<div class="tip-card"><h4 style="color:#D4AF37;margin:0 0 0.5rem 0">💡 Tip #{i+1}</h4>', unsafe_allow_html=True)
+        
+        default_titles = ['PERFECT FORM', 'PROGRESSIVE OVERLOAD', 'SLEEP AS TRAINING', 'FUEL YOUR SESSIONS', 'HYDRATION DAILY', 'MENTAL EDGE',
+                          'CONSISTENCY', 'TRACK PROGRESS', 'WARM UP PROPERLY', 'COOL DOWN', 'STRETCHING', 'MINDSET']
+        default_bodies = [
+            'Every rep with compromised technique reinforces a harmful pattern. Reduce load, master the movement, then progress. Record yourself regularly.',
+            'Add 2.5 kg or 2 reps each week minimum. Log every session. If you are not progressing, you are regressing.',
+            'Growth hormone peaks during deep sleep. 7-9 hours nightly is not optional — it is where muscle protein synthesis occurs.',
+            'Target 1.8-2.2g protein per kg bodyweight daily. Eat a protein-rich meal 60-90 minutes before training. Log your nutrition.',
+            'Minimum 4 liters of water on training days. Even mild dehydration reduces force output by up to 20%.',
+            'Controlled breathing and visualization before each set measurably increases power output. Train the mind first. The body follows.',
+            'Show up every single day. Consistency beats intensity every single time.',
+            'Track every workout. What gets measured gets improved.',
+            'Never skip warm-up. It prepares your body and prevents injuries.',
+            'Cool down properly after each session to aid recovery.',
+            'Stretch tight muscles regularly to maintain flexibility.',
+            'Your mindset determines your results. Stay focused and positive.',
+        ]
+        
         tip_title = st.text_input(f'Title {i+1}', 
-            value=['PERFECT FORM', 'PROGRESSIVE OVERLOAD', 'SLEEP AS TRAINING', 'FUEL YOUR SESSIONS', 'HYDRATION DAILY', 'MENTAL EDGE'][i],
-            key=f'tip_title_{i}', help=f'Title for tip #{i+1}.')
+            value=default_titles[i] if i < len(default_titles) else f'Tip {i+1}',
+            key=f'tip_title_{i}', 
+            help=f'Title for tip #{i+1}. Keep it short and impactful.')
+        
         tip_body = st.text_area(f'Body {i+1}',
-            value=['Every rep with compromised technique reinforces a harmful pattern. Reduce load, master the movement, then progress. Record yourself regularly.',
-                   'Add 2.5 kg or 2 reps each week minimum. Log every session. If you are not progressing, you are regressing.',
-                   'Growth hormone peaks during deep sleep. 7-9 hours nightly is not optional — it is where muscle protein synthesis occurs.',
-                   'Target 1.8-2.2g protein per kg bodyweight daily. Eat a protein-rich meal 60-90 minutes before training. Log your nutrition.',
-                   'Minimum 4 liters of water on training days. Even mild dehydration reduces force output by up to 20%.',
-                   'Controlled breathing and visualization before each set measurably increases power output. Train the mind first. The body follows.'][i],
-            height=80, key=f'tip_body_{i}', help=f'Detailed body text for tip #{i+1}.')
+            value=default_bodies[i] if i < len(default_bodies) else 'Write your tip here...',
+            height=80, 
+            key=f'tip_body_{i}', 
+            help=f'Detailed body text for tip #{i+1}. Explain the tip in 1-2 sentences.')
+        
         st.markdown('</div>', unsafe_allow_html=True)
         
         if tip_title.strip():
-            tips.append({'title': tip_title.strip(), 'icon': f'{i+1:02d}', 'body': tip_body.strip()})
+            tips.append({
+                'title': tip_title.strip(), 
+                'icon': f'{i+1:02d}', 
+                'body': tip_body.strip()
+            })
+
+st.caption(f'💡 {len(tips)} tips configured — Will appear in a {min(len(tips), 6)}-tip grid on Page 7')
 
 # ═══════════════════════════════════════════════
 # SECTION 7: QUOTE
