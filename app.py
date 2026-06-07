@@ -21,8 +21,12 @@ input,textarea,select{background-color:#1A2235!important;color:#E8E4DC!important
 .day-header{background:linear-gradient(135deg,#1A2235,#080B12);padding:1rem;border-radius:10px;border-left:5px solid #D4AF37;margin:1rem 0}
 .day-header h3{color:#D4AF37;margin:0}
 .success-box{background:linear-gradient(135deg,#1C1A08,#2A2208);border:2px solid #D4AF37;border-radius:10px;padding:2rem;text-align:center;color:#D4AF37;font-size:1.5rem;font-weight:900}
-.tooltip-icon{cursor:help;color:#D4AF37;font-size:0.9rem}
 .section-desc{color:#6B7280;font-size:0.85rem;margin-bottom:1rem}
+.tip-card{background:#111827;border:1px solid #374151;border-radius:10px;padding:1rem;margin:0.5rem 0}
+.tip-card:hover{border-color:#D4AF37}
+/* White tooltip */
+div[data-baseweb="tooltip"]{background-color:#FFFFFF!important;color:#080B12!important;font-weight:600!important;border:2px solid #D4AF37!important}
+div[data-baseweb="tooltip"] p{color:#080B12!important;font-weight:500!important}
 </style>
 """, unsafe_allow_html=True)
 
@@ -48,53 +52,46 @@ PROGRAM_CONFIGS = {
     'ARNOLD SPLIT': {
         'days': [
             {'key': 'chest_back_day', 'label': 'CHEST & BACK', 'subtitle': 'CHEST · LATS · RHOMBOIDS',
-             'desc': 'Superset chest and back movements for maximum pump and efficiency. Agonist-antagonist pairing increases blood flow and recovery between sets.',
+             'desc': 'Superset chest and back movements for maximum pump and efficiency.',
              'rest_note': 'REST 60-90 SECONDS BETWEEN SUPERSETS'},
             {'key': 'shoulders_arms_day', 'label': 'SHOULDERS & ARMS', 'subtitle': 'DELTS · BICEPS · TRICEPS',
-             'desc': 'Focus on deltoid isolation (all three heads) followed by arm supersets for complete upper body pump.',
+             'desc': 'Focus on deltoid isolation followed by arm supersets.',
              'rest_note': 'REST 45-60 SECONDS BETWEEN SETS'},
             {'key': 'legs_day', 'label': 'LEGS & CORE', 'subtitle': 'QUADS · HAMSTRINGS · CALVES · ABS',
-             'desc': 'Heavy leg compounds followed by targeted core work for complete lower body development.',
+             'desc': 'Heavy leg compounds followed by core work.',
              'rest_note': 'REST 2 MINUTES AFTER HEAVY COMPOUNDS'},
         ]
     },
     'UPPER / LOWER': {
         'days': [
             {'key': 'upper_day', 'label': 'UPPER BODY', 'subtitle': 'CHEST · BACK · SHOULDERS · ARMS',
-             'desc': 'Complete upper body workout. Start with heavy compounds, progress to isolation for maximum development.',
+             'desc': 'Complete upper body workout with compounds and isolation.',
              'rest_note': 'REST 90-120S ON COMPOUNDS | 60S ON ISOLATION'},
             {'key': 'lower_day', 'label': 'LOWER BODY', 'subtitle': 'QUADS · HAMSTRINGS · GLUTES · CALVES',
-             'desc': 'Full lower body session with both bilateral and unilateral work for balanced leg development.',
+             'desc': 'Full lower body session with bilateral and unilateral work.',
              'rest_note': 'REST 2 MINUTES ON HEAVY SETS'},
         ]
     },
     'BRO SPLIT': {
         'days': [
-            {'key': 'chest_day', 'label': 'CHEST', 'subtitle': 'PECTORALS · FRONT DELTS',
-             'desc': 'Full chest development with flat, incline, decline, and isolation fly movements.',
-             'rest_note': 'REST 90 SECONDS BETWEEN SETS'},
-            {'key': 'back_day', 'label': 'BACK', 'subtitle': 'LATS · TRAPS · RHOMBOIDS',
-             'desc': 'Width and thickness focused back training. Row for thickness, pulldown for width.',
-             'rest_note': 'REST 90 SECONDS BETWEEN SETS'},
+            {'key': 'chest_day', 'label': 'CHEST', 'subtitle': 'PECTORALS',
+             'desc': 'Full chest development with flat, incline, and isolation work.', 'rest_note': 'REST 90 SECONDS'},
+            {'key': 'back_day', 'label': 'BACK', 'subtitle': 'LATS · TRAPS',
+             'desc': 'Width and thickness focused back training.', 'rest_note': 'REST 90 SECONDS'},
             {'key': 'shoulders_day', 'label': 'SHOULDERS', 'subtitle': 'ALL DELTOID HEADS',
-             'desc': 'Complete shoulder development. Front, side, and rear delts with pressing and raising.',
-             'rest_note': 'REST 60-90 SECONDS BETWEEN SETS'},
-            {'key': 'arms_day', 'label': 'ARMS', 'subtitle': 'BICEPS · TRICEPS · FOREARMS',
-             'desc': 'Isolation work for maximum arm pump. Superset biceps and triceps for efficiency.',
-             'rest_note': 'REST 45-60 SECONDS BETWEEN SETS'},
-            {'key': 'legs_day', 'label': 'LEGS', 'subtitle': 'QUADS · HAMSTRINGS · GLUTES · CALVES',
-             'desc': 'Complete leg day. Squat, hinge, lunge, and isolate for full lower body development.',
-             'rest_note': 'REST 2 MINUTES ON HEAVY SETS'},
+             'desc': 'Complete shoulder development.', 'rest_note': 'REST 60-90 SECONDS'},
+            {'key': 'arms_day', 'label': 'ARMS', 'subtitle': 'BICEPS · TRICEPS',
+             'desc': 'Isolation work for maximum arm pump.', 'rest_note': 'REST 45-60 SECONDS'},
+            {'key': 'legs_day', 'label': 'LEGS', 'subtitle': 'QUADS · HAMSTRINGS · CALVES',
+             'desc': 'Complete leg development.', 'rest_note': 'REST 2 MINUTES ON HEAVY SETS'},
         ]
     },
     'FULL BODY': {
         'days': [
             {'key': 'full_body_a', 'label': 'FULL BODY A', 'subtitle': 'STRENGTH FOCUS',
-             'desc': 'Full body workout emphasizing strength on main compound lifts with lower volume.',
-             'rest_note': 'REST 2-3 MINUTES ON MAIN LIFTS'},
+             'desc': 'Full body emphasizing strength on main compounds.', 'rest_note': 'REST 2-3 MINUTES'},
             {'key': 'full_body_b', 'label': 'FULL BODY B', 'subtitle': 'HYPERTROPHY FOCUS',
-             'desc': 'Full body workout with higher volume and moderate weight for muscle growth.',
-             'rest_note': 'REST 60-90 SECONDS BETWEEN SETS'},
+             'desc': 'Full body with higher volume for muscle growth.', 'rest_note': 'REST 60-90 SECONDS'},
         ]
     },
 }
@@ -103,71 +100,56 @@ PROGRAM_CONFIGS = {
 # SECTION 1: CLIENT INFO
 # ═══════════════════════════════════════════════
 st.markdown("## 📋 CLIENT INFORMATION")
-st.markdown('<p class="section-desc">Fill in the basic client details. This information appears on the cover page of the PDF.</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-desc">Basic client details — appears on the cover page of the PDF.</p>', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    client_name = st.text_input('👤 Client Name', 'MOHAMED', 
-        help='Full name of the client as it will appear prominently on the cover page and throughout the PDF.')
-    weight = st.text_input('⚖️ Weight (kg)', '75', 
-        help='Client current body weight in kilograms. Used for reference in the plan.')
-    start_date = st.text_input('📅 Start Date', datetime.now().strftime('%B %Y').upper(), 
-        help='The month and year the program starts. Example: JUNE 2026')
+    client_name = st.text_input('👤 Client Name', 'MOHAMED', help='Full name displayed on the cover page.')
+    weight = st.text_input('⚖️ Weight (kg)', '75', help='Current body weight in kilograms.')
+    start_date = st.text_input('📅 Start Date', datetime.now().strftime('%B %Y').upper(), help='Program start month/year. Example: JUNE 2026')
 with col2:
-    goal = st.text_input('🎯 Goal', 'HYPERTROPHY & STRENGTH', 
-        help='Primary training goal. Examples: HYPERTROPHY, STRENGTH, FAT LOSS, ENDURANCE')
-    volume = st.text_input('📊 Volume', 'VOL.1', 
-        help='Program volume/phase identifier. Example: VOL.1, PHASE 2, MESOCYCLE 1')
-    duration = st.text_input('⏱️ Duration', '8 WEEKS', 
-        help='Total length of the program. Example: 8 WEEKS, 12 WEEKS, 6 WEEKS')
+    goal = st.text_input('🎯 Goal', 'HYPERTROPHY & STRENGTH', help='Primary training goal. Examples: HYPERTROPHY, STRENGTH, FAT LOSS')
+    volume = st.text_input('📊 Volume', 'VOL.1', help='Program volume/phase identifier.')
+    duration = st.text_input('⏱️ Duration', '8 WEEKS', help='Total program length. Example: 8 WEEKS, 12 WEEKS')
 with col3:
-    tagline = st.text_input('💬 Tagline', 'ENGINEERED FOR DOMINANCE', 
-        help='A motivational tagline that appears on the cover under the program name.')
-    frequency = st.text_input('🔄 Frequency', '6 DAYS / WEEK', 
-        help='How many days per week the client trains. Example: 6 DAYS / WEEK, 5 DAYS / WEEK')
-    
-    program_type = st.selectbox('📋 Program Type', list(PROGRAM_CONFIGS.keys()), index=0,
-        help='Select the training split type. This determines the day layout in the PDF. Choose the one that matches your client needs.')
+    tagline = st.text_input('💬 Tagline', 'ENGINEERED FOR DOMINANCE', help='Motivational tagline on the cover.')
+    frequency = st.text_input('🔄 Frequency', '6 DAYS / WEEK', help='Training days per week.')
+    program_type = st.selectbox('📋 Program Type', list(PROGRAM_CONFIGS.keys()), index=0, help='Training split type. Determines the day layout in the PDF.')
 
 # ═══════════════════════════════════════════════
 # SECTION 2: COACH INFO
 # ═══════════════════════════════════════════════
 st.markdown("---")
 st.markdown("## 🧑‍🏫 COACH INFORMATION")
-st.markdown('<p class="section-desc">Your contact details. These appear in the footer of every page and on the last page.</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-desc">Your contact details — appear in the footer and last page of the PDF.</p>', unsafe_allow_html=True)
 
 col_c1, col_c2, col_c3 = st.columns(3)
 with col_c1:
-    coach_name = st.text_input('Coach Name', 'AHMED TEKA', 
-        help='Your full name as the coach. Displayed on the cover and last page.')
+    coach_name = st.text_input('Coach Name', 'AHMED TEKA', help='Your full name displayed on cover and last page.')
 with col_c2:
-    instagram = st.text_input('Instagram Username', '@coach.teka1', 
-        help='Your Instagram handle. Shown in the footer with an IG icon.')
+    instagram = st.text_input('Instagram Username', '@coach.teka1', help='Your IG handle shown in footer with IG icon.')
 with col_c3:
-    phone = st.text_input('Phone Number', '01033047057', 
-        help='Your contact number. Displayed in the footer of every page.')
+    phone = st.text_input('Phone Number', '01033047057', help='Contact number in footer of every page.')
 
-instagram_link = st.text_input('Instagram Full Link', 'https://instagram.com/coach.teka1', 
-    help='The full clickable Instagram URL. Used for the link in the PDF footer.')
+instagram_link = st.text_input('Instagram Full Link', 'https://instagram.com/coach.teka1', help='Full clickable Instagram URL for PDF link.')
 
 # ═══════════════════════════════════════════════
 # SECTION 3: PHILOSOPHY
 # ═══════════════════════════════════════════════
 st.markdown("---")
 st.markdown("## 📖 PROGRAM PHILOSOPHY")
-st.markdown('<p class="section-desc">This text appears on Page 2 (Introduction). Write your training philosophy, program overview, and what the client should expect.</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-desc">Appears on Page 2 (Introduction). Write your training philosophy and methodology.</p>', unsafe_allow_html=True)
 
 philosophy = st.text_area('Training Philosophy', 
     value="This program is not about going through the motions. It is about training with intention, precision, and relentless focus. Every set, every rep, every second of rest is calculated to push your body beyond its limits and force adaptation.\n\nThe Push Pull Legs split allows optimal muscle recovery while maintaining high training frequency. You will train each muscle group twice per week across 6 sessions, with one full rest day for complete systemic recovery.\n\nAdhere strictly to prescribed rest intervals. Progressive overload — adding weight or reps each week — is your primary growth driver. Track every session. Outperform yesterday.",
-    height=150,
-    help='Write a comprehensive training philosophy. This appears on the Introduction page (Page 2) of the PDF. Include your approach, methodology, and motivational message.')
+    height=150, help='Comprehensive training philosophy for Page 2 of the PDF.')
 
 # ═══════════════════════════════════════════════
 # SECTION 4: EXERCISES
 # ═══════════════════════════════════════════════
 st.markdown("---")
 st.markdown(f"## 💪 {program_type} — EXERCISES")
-st.markdown('<p class="section-desc">Configure exercises for each training day. Fill in the exercise name, sets, reps, rest time, description, and optional YouTube link.</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-desc">Configure exercises for each training day. Each exercise has: Name, Sets, Reps, Rest, Description, Video Link.</p>', unsafe_allow_html=True)
 
 config = PROGRAM_CONFIGS[program_type]
 all_exercises = {}
@@ -175,114 +157,118 @@ all_exercises = {}
 for day_idx, day in enumerate(config['days']):
     st.markdown(f'<div class="day-header"><h3>🏆 Day {day_idx+1}: {day["label"]} — {day["subtitle"]}</h3></div>', unsafe_allow_html=True)
     
-    # Day description and rest note
     ecol1, ecol2 = st.columns([2,1])
     with ecol1:
-        day_desc = st.text_area(f'📝 Description — {day["label"]} Day', value=day['desc'], height=70, key=f'desc_{day["key"]}',
-            help=f'A brief description of the {day["label"]} training day focus and methodology.')
+        day_desc = st.text_area(f'📝 Description — {day["label"]}', value=day['desc'], height=70, key=f'desc_{day["key"]}', help=f'Focus and methodology for {day["label"]} day.')
     with ecol2:
-        day_rest = st.text_input(f'⏱️ Rest Note — {day["label"]} Day', value=day['rest_note'], key=f'rest_{day["key"]}',
-            help=f'Rest period instructions for the {day["label"]} day exercises.')
+        day_rest = st.text_input(f'⏱️ Rest Note — {day["label"]}', value=day['rest_note'], key=f'rest_{day["key"]}', help=f'Rest period instructions for {day["label"]} day.')
     
-    # Number of exercises
-    num_exercises = st.number_input(f'Number of exercises for {day["label"]} Day', min_value=1, max_value=20, value=8, key=f'num_{day["key"]}',
-        help=f'How many exercises for {day["label"]} day? You can add up to 20 exercises per day.')
+    num_exercises = st.number_input(f'Number of exercises for {day["label"]}', min_value=1, max_value=20, value=8, key=f'num_{day["key"]}', help=f'How many exercises for {day["label"]} day? (Max 20)')
     
-    st.markdown(f"**📋 Exercise List — {day['label']} Day**")
+    st.markdown(f"**📋 Exercise List — {day['label']}**")
     
-    # Column headers
-    hcol1, hcol2, hcol3, hcol4, hcol5, hcol6 = st.columns([3, 1, 1, 1, 3, 2])
-    with hcol1:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🏋️ EXERCISE NAME</p>', unsafe_allow_html=True)
-    with hcol2:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔢 SETS</p>', unsafe_allow_html=True)
-    with hcol3:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔁 REPS</p>', unsafe_allow_html=True)
-    with hcol4:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">⏸️ REST</p>', unsafe_allow_html=True)
-    with hcol5:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">📝 DESCRIPTION / NOTES</p>', unsafe_allow_html=True)
-    with hcol6:
-        st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔗 VIDEO LINK</p>', unsafe_allow_html=True)
+    # Headers
+    h1, h2, h3, h4, h5, h6 = st.columns([3, 1, 1, 1, 3, 2])
+    with h1: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🏋️ NAME</p>', unsafe_allow_html=True)
+    with h2: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔢 SETS</p>', unsafe_allow_html=True)
+    with h3: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔁 REPS</p>', unsafe_allow_html=True)
+    with h4: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">⏸️ REST</p>', unsafe_allow_html=True)
+    with h5: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">📝 DESCRIPTION</p>', unsafe_allow_html=True)
+    with h6: st.markdown('<p style="color:#D4AF37;font-weight:700;font-size:0.8rem">🔗 VIDEO LINK</p>', unsafe_allow_html=True)
     
     day_exercises = []
-    
     for ex_idx in range(int(num_exercises)):
-        exc1, exc2, exc3, exc4, exc5, exc6 = st.columns([3, 1, 1, 1, 3, 2])
-        with exc1:
-            ex_name = st.text_input('Ex Name', value='', placeholder=f'Ex: BENCH PRESS', key=f'name_{day["key"]}_{ex_idx}', label_visibility='collapsed')
-        with exc2:
-            ex_sets = st.text_input('Sets', value='3', key=f'sets_{day["key"]}_{ex_idx}', label_visibility='collapsed')
-        with exc3:
-            ex_reps = st.text_input('Reps', value='10-12', key=f'reps_{day["key"]}_{ex_idx}', label_visibility='collapsed')
-        with exc4:
+        c1, c2, c3, c4, c5, c6 = st.columns([3, 1, 1, 1, 3, 2])
+        with c1:
+            ex_name = st.text_input('Name', value='', placeholder='Ex: BENCH PRESS', key=f'n_{day["key"]}_{ex_idx}', label_visibility='collapsed')
+        with c2:
+            ex_sets = st.text_input('Sets', value='3', key=f's_{day["key"]}_{ex_idx}', label_visibility='collapsed')
+        with c3:
+            ex_reps = st.text_input('Reps', value='10-12', key=f'r_{day["key"]}_{ex_idx}', label_visibility='collapsed')
+        with c4:
             ex_rest = st.text_input('Rest', value='90s', key=f'rest_{day["key"]}_{ex_idx}', label_visibility='collapsed')
-        with exc5:
-            ex_desc = st.text_input('Description', value='', placeholder='Full ROM. Control movement.', key=f'descinput_{day["key"]}_{ex_idx}', label_visibility='collapsed')
-        with exc6:
-            ex_link = st.text_input('Video Link', value='#', key=f'link_{day["key"]}_{ex_idx}', label_visibility='collapsed')
+        with c5:
+            ex_desc = st.text_input('Desc', value='', placeholder='Full ROM. Control.', key=f'd_{day["key"]}_{ex_idx}', label_visibility='collapsed')
+        with c6:
+            ex_link = st.text_input('Link', value='#', key=f'l_{day["key"]}_{ex_idx}', label_visibility='collapsed')
         
         if ex_name.strip():
             day_exercises.append({
-                'name': ex_name.strip(),
-                'sets': ex_sets.strip() or '3',
-                'reps': ex_reps.strip() or '10-12',
-                'rest': ex_rest.strip() or '90s',
-                'desc': ex_desc.strip() or 'Full ROM. Control the movement.',
-                'link': ex_link.strip() or '#',
-                'day': day['key']
+                'name': ex_name.strip(), 'sets': ex_sets.strip() or '3', 'reps': ex_reps.strip() or '10-12',
+                'rest': ex_rest.strip() or '90s', 'desc': ex_desc.strip() or 'Full ROM.',
+                'link': ex_link.strip() or '#', 'day': day['key']
             })
     
-    all_exercises[day['key']] = {
-        'exercises': day_exercises,
-        'desc': day_desc,
-        'rest_note': day_rest,
-        'label': day['label'],
-        'subtitle': day['subtitle']
-    }
+    all_exercises[day['key']] = {'exercises': day_exercises, 'desc': day_desc, 'rest_note': day_rest, 'label': day['label'], 'subtitle': day['subtitle']}
 
 # ═══════════════════════════════════════════════
-# SECTION 5: WARMUP
+# SECTION 5: WARMUP (ALL FIELDS VISIBLE)
 # ═══════════════════════════════════════════════
 st.markdown("---")
-with st.expander("🔥 WARM-UP PROTOCOL (Click to Edit)", expanded=False):
-    st.markdown('<p class="section-desc">Configure the warm-up section. This appears on Page 3 of the PDF.</p>', unsafe_allow_html=True)
-    
-    wu_cardio = st.text_area('🏃 Cardio Phase', '5-10 MIN LIGHT CARDIO: Treadmill or bike at 60-65% max heart rate. Goal: elevate core temperature, increase joint lubrication, prime the cardiovascular system for heavy training.', height=70,
-        help='Instructions for the initial cardio warm-up phase.')
-    
-    wc1, wc2 = st.columns(2)
-    with wc1:
-        wu_upper = st.text_area('💪 Upper Body Warm-Up Sequence', 'Shoulder circles, band pull-aparts, arm swings, chest openers, thoracic rotations. Perform 2 full rounds before every Push and Pull session.', height=100,
-            help='Upper body dynamic warm-up exercises and instructions.')
-    with wc2:
-        wu_lower = st.text_area('🦵 Lower Body Warm-Up Sequence', 'Hip circles, leg swings, bodyweight squats, ankle rotations, glute bridges. Perform 2 full rounds before every Legs session.', height=100,
-            help='Lower body dynamic warm-up exercises and instructions.')
-    
-    wu_protocol = st.text_area('📋 Protocol Rules (One per line)', 
-        value='Never skip warm-up — injury prevention is non-negotiable\nFull range of motion on every drill\nUse warm-up sets: 50% > 75% > working weight\nNote restricted areas and spend extra time there',
-        height=120,
-        help='List of warm-up protocol rules. Each line becomes a bullet point in the PDF.')
+st.markdown("## 🔥 WARM-UP PROTOCOL")
+st.markdown('<p class="section-desc">Appears on Page 3 of the PDF. Configure the complete warm-up sequence.</p>', unsafe_allow_html=True)
+
+wu_cardio = st.text_area('🏃 Cardio Phase', 
+    value='5-10 MIN LIGHT CARDIO: Treadmill or bike at 60-65% max heart rate. Goal: elevate core temperature, increase joint lubrication, prime the cardiovascular system for heavy training.',
+    height=70, help='Initial cardio warm-up instructions for Page 3.')
+
+wu_col1, wu_col2 = st.columns(2)
+with wu_col1:
+    wu_upper = st.text_area('💪 Upper Body Warm-Up Sequence',
+        value='Shoulder circles, band pull-aparts, arm swings, chest openers, thoracic rotations. Perform 2 full rounds before every Push and Pull session.',
+        height=100, help='Upper body dynamic warm-up routine.')
+    wu_upper_link = st.text_input('🔗 Upper Body Video Link', 'https://youtube.com/watch?v=upper_warmup', help='YouTube link for upper body warm-up video.')
+with wu_col2:
+    wu_lower = st.text_area('🦵 Lower Body Warm-Up Sequence',
+        value='Hip circles, leg swings, bodyweight squats, ankle rotations, glute bridges. Perform 2 full rounds before every Legs session.',
+        height=100, help='Lower body dynamic warm-up routine.')
+    wu_lower_link = st.text_input('🔗 Lower Body Video Link', 'https://youtube.com/watch?v=lower_warmup', help='YouTube link for lower body warm-up video.')
+
+wu_protocol = st.text_area('📋 Protocol Rules (One rule per line)',
+    value='Never skip warm-up — injury prevention is non-negotiable\nFull range of motion on every drill\nUse warm-up sets: 50% > 75% > working weight\nNote restricted areas and spend extra time there',
+    height=120, help='Warm-up protocol rules. Each line = one bullet point in the PDF.')
 
 # ═══════════════════════════════════════════════
-# SECTION 6: TIPS & QUOTE
+# SECTION 6: TIPS (ALL FIELDS VISIBLE)
 # ═══════════════════════════════════════════════
 st.markdown("---")
-with st.expander("💡 TIPS & MOTIVATION (Click to Edit)", expanded=False):
-    st.markdown('<p class="section-desc">Tips appear on Page 7 in a 2x3 grid. Quote appears at the bottom of Page 7.</p>', unsafe_allow_html=True)
-    
-    tips_text = st.text_area('📝 Tips (Format: TITLE | BODY — One per line)', 
-        value="PERFECT FORM | Every rep with compromised technique reinforces a harmful pattern. Reduce load, master the movement, then progress. Record yourself regularly.\nPROGRESSIVE OVERLOAD | Add 2.5 kg or 2 reps each week minimum. Log every session. If you are not progressing, you are regressing.\nSLEEP AS TRAINING | Growth hormone peaks during deep sleep. 7-9 hours nightly is not optional — it is where muscle protein synthesis occurs.\nFUEL YOUR SESSIONS | Target 1.8-2.2g protein per kg bodyweight daily. Eat a protein-rich meal 60-90 minutes before training. Log your nutrition.\nHYDRATION DAILY | Minimum 4 liters of water on training days. Even mild dehydration reduces force output by up to 20%.\nMENTAL EDGE | Controlled breathing and visualization before each set measurably increases power output. Train the mind first. The body follows.",
-        height=200,
-        help='Enter 6 tips. Each tip on a new line. Format: TITLE | BODY TEXT')
-    
-    cq1, cq2 = st.columns([3,1])
-    with cq1:
-        quote = st.text_area('💬 Motivational Quote', 'THE BODY ACHIEVES WHAT THE MIND BELIEVES. DISCIPLINE IS THE BRIDGE BETWEEN GOALS AND GREATNESS.', height=100,
-            help='The main motivational quote displayed prominently on Page 7.')
-    with cq2:
-        quote_author = st.text_input('✍️ Quote Author', '— Ahmed Teka',
-            help='Author attribution for the quote. Example: — Ahmed Teka')
+st.markdown("## 💡 TIPS & MOTIVATION")
+st.markdown('<p class="section-desc">Appears on Page 7 in a 2×3 grid. Configure 6 tips below.</p>', unsafe_allow_html=True)
+
+tip_cols = st.columns(2)
+tips = []
+
+for i in range(6):
+    with tip_cols[i % 2]:
+        st.markdown(f'<div class="tip-card"><h4 style="color:#D4AF37;margin:0 0 0.5rem 0">Tip #{i+1}</h4>', unsafe_allow_html=True)
+        tip_title = st.text_input(f'Title {i+1}', 
+            value=['PERFECT FORM', 'PROGRESSIVE OVERLOAD', 'SLEEP AS TRAINING', 'FUEL YOUR SESSIONS', 'HYDRATION DAILY', 'MENTAL EDGE'][i],
+            key=f'tip_title_{i}', help=f'Title for tip #{i+1}.')
+        tip_body = st.text_area(f'Body {i+1}',
+            value=['Every rep with compromised technique reinforces a harmful pattern. Reduce load, master the movement, then progress. Record yourself regularly.',
+                   'Add 2.5 kg or 2 reps each week minimum. Log every session. If you are not progressing, you are regressing.',
+                   'Growth hormone peaks during deep sleep. 7-9 hours nightly is not optional — it is where muscle protein synthesis occurs.',
+                   'Target 1.8-2.2g protein per kg bodyweight daily. Eat a protein-rich meal 60-90 minutes before training. Log your nutrition.',
+                   'Minimum 4 liters of water on training days. Even mild dehydration reduces force output by up to 20%.',
+                   'Controlled breathing and visualization before each set measurably increases power output. Train the mind first. The body follows.'][i],
+            height=80, key=f'tip_body_{i}', help=f'Detailed body text for tip #{i+1}.')
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        if tip_title.strip():
+            tips.append({'title': tip_title.strip(), 'icon': f'{i+1:02d}', 'body': tip_body.strip()})
+
+# ═══════════════════════════════════════════════
+# SECTION 7: QUOTE
+# ═══════════════════════════════════════════════
+st.markdown("---")
+st.markdown("## 💬 MOTIVATIONAL QUOTE")
+st.markdown('<p class="section-desc">Appears at the bottom of Page 7.</p>', unsafe_allow_html=True)
+
+qcol1, qcol2 = st.columns([3, 1])
+with qcol1:
+    quote = st.text_area('Quote', 'THE BODY ACHIEVES WHAT THE MIND BELIEVES. DISCIPLINE IS THE BRIDGE BETWEEN GOALS AND GREATNESS.', height=100, help='Main motivational quote on Page 7.')
+with qcol2:
+    quote_author = st.text_input('Author', '— Ahmed Teka', help='Quote author attribution.')
 
 # ═══════════════════════════════════════════════
 # GENERATE BUTTON
@@ -294,32 +280,18 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 if gen_clicked:
     if not client_name:
-        st.error('❌ ERROR: Please enter the client name at minimum.')
+        st.error('❌ Please enter the client name.')
     else:
-        with st.spinner('⚡ Creating your premium 8-page workout plan PDF... This takes a few seconds...'):
+        with st.spinner('⚡ Creating premium 8-page workout plan...'):
             try:
-                # Collect all exercises
                 all_ex_list = []
-                for day_key, day_data in all_exercises.items():
-                    all_ex_list.extend(day_data['exercises'])
+                for dk, dd in all_exercises.items():
+                    all_ex_list.extend(dd['exercises'])
                 
-                # If no exercises entered, create defaults
                 if not all_ex_list:
-                    for day_key, day_data in all_exercises.items():
+                    for dk, dd in all_exercises.items():
                         for i in range(3):
-                            all_ex_list.append({
-                                'name': f'{day_data["label"]} EXERCISE {i+1}',
-                                'sets': '3', 'reps': '10-12', 'rest': '90s',
-                                'desc': 'Full ROM. Control the movement.',
-                                'link': '#', 'day': day_key
-                            })
-                
-                # Parse tips
-                tips = []
-                for line in tips_text.strip().split('\n'):
-                    if '|' in line:
-                        t, b = line.split('|', 1)
-                        tips.append({'title': t.strip(), 'icon': f'{len(tips)+1:02d}', 'body': b.strip()})
+                            all_ex_list.append({'name': f'{dd["label"]} EX {i+1}', 'sets': '3', 'reps': '10-12', 'rest': '90s', 'desc': 'Full ROM.', 'link': '#', 'day': dk})
                 
                 if len(tips) < 6:
                     defaults = ['PERFECT FORM', 'PROGRESSIVE OVERLOAD', 'SLEEP AS TRAINING', 'FUEL YOUR SESSIONS', 'HYDRATION DAILY', 'MENTAL EDGE']
@@ -327,7 +299,6 @@ if gen_clicked:
                         if len(tips) <= i:
                             tips.append({'title': t, 'icon': f'{i+1:02d}', 'body': 'Focus on quality over quantity.'})
                 
-                # Build data
                 data = {
                     'client_name': client_name, 'program': program_type, 'volume': volume,
                     'tagline': tagline, 'duration': duration, 'frequency': frequency,
@@ -336,39 +307,31 @@ if gen_clicked:
                     'philosophy': philosophy, 'exercises': all_ex_list, 'tips': tips[:6],
                     'quote': quote, 'quote_author': quote_author,
                     'timeline': [
-                        {'week': 'WEEK 1-2', 'phase': 'FOUNDATION', 'desc': 'Master form. Build mind-muscle connection. Establish baseline loads for all movements.'},
-                        {'week': 'WEEK 3-4', 'phase': 'PROGRESSION', 'desc': 'Increase load by 5-10%. Volume ramps methodically. Training intensity begins to rise.'},
-                        {'week': 'WEEK 5-6', 'phase': 'INTENSIFICATION', 'desc': 'Push beyond comfort zones. Drop sets introduced on the final exercise of each session.'},
-                        {'week': 'WEEK 7-8', 'phase': 'PEAK OUTPUT', 'desc': 'Maximum effort on all lifts. Test your true capacity. Deload the final 3 days of week 8.'},
+                        {'week': 'WEEK 1-2', 'phase': 'FOUNDATION', 'desc': 'Master form. Build mind-muscle connection.'},
+                        {'week': 'WEEK 3-4', 'phase': 'PROGRESSION', 'desc': 'Increase load by 5-10%.'},
+                        {'week': 'WEEK 5-6', 'phase': 'INTENSIFICATION', 'desc': 'Push beyond comfort zones.'},
+                        {'week': 'WEEK 7-8', 'phase': 'PEAK OUTPUT', 'desc': 'Maximum effort. Deload final 3 days.'},
                     ],
                     'warmup': {
-                        'cardio': wu_cardio,
-                        'upper_note': wu_upper,
-                        'lower_note': wu_lower,
-                        'upper_link': '#',
-                        'lower_link': '#',
+                        'cardio': wu_cardio, 'upper_note': wu_upper, 'lower_note': wu_lower,
+                        'upper_link': wu_upper_link, 'lower_link': wu_lower_link,
                         'protocol': [p.strip() for p in wu_protocol.split('\n') if p.strip()],
                     },
                 }
                 
                 pdf_bytes = generate_pdf(data)
-                st.markdown('<div class="success-box">🔥 PDF GENERATED SUCCESSFULLY! 🔥<br><small>Your premium workout plan is ready for download.</small></div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="success-box">🔥 PDF GENERATED SUCCESSFULLY! 🔥<br><small>Client: {client_name} | Program: {program_type} | {len(all_ex_list)} Exercises | 8 Pages</small></div>', unsafe_allow_html=True)
                 st.download_button('📥 DOWNLOAD PREMIUM PDF', data=pdf_bytes, file_name=f'AhmedTeka_{client_name.replace(" ","_")}.pdf', mime='application/pdf', use_container_width=True)
                 
-                # Success details
-                st.success(f'✅ Client: {client_name} | Program: {program_type} | Exercises: {len(all_ex_list)} | Pages: 8')
-                
             except Exception as e:
-                st.error(f'❌ Error generating PDF: {str(e)}')
+                st.error(f'❌ Error: {str(e)}')
                 import traceback
                 st.code(traceback.format_exc())
-                st.info('Please check all fields and try again. Contact support if the issue persists.')
 
 st.markdown('---')
 st.markdown("""
 <div style="text-align:center;color:#6B7280;padding:1rem">
     <p style="font-size:1.1rem;color:#D4AF37;font-weight:700">© AHMED TEKA — PREMIUM WORKOUT PLANS</p>
-    <p>📸 Instagram: @coach.teka1 | 📞 Phone: 01033047057</p>
-    <p style="font-size:0.8rem">Professional Training Programs · Since 2020</p>
+    <p>📸 @coach.teka1 | 📞 01033047057</p>
 </div>
 """, unsafe_allow_html=True)
