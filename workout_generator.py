@@ -117,7 +117,17 @@ def chrome(c, section, pgnum, data, accent=GOLD):
 
 def p1_cover(c, data):
     fill_bg(c)
-    grad_v(c, 0, 0, W, H, BG4, BG)
+    
+    # Cover photo - AhmedTeka_image1.jpeg
+    cover_photo = 'images/AhmedTeka_image1.jpeg'
+    try:
+        if os.path.exists(cover_photo):
+            c.drawImage(cover_photo, 0, 0, W, H, preserveAspectRatio=True)
+        else:
+            raise Exception()
+    except:
+        grad_v(c, 0, 0, W, H, BG4, BG)
+    
     c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     left_stripe(c)
@@ -136,10 +146,7 @@ def p1_cover(c, data):
     c.line(STRIPE_W+20, ty+30, STRIPE_W+20+50, ty+30)
     c.line(W-20-50, ty+30, W-20, ty+30)
     
-    # Display program name EXACTLY as entered
     program_name = data.get('program', 'PUSH // PULL // LEGS')
-    
-    # Auto-size font based on name length
     name_len = len(program_name)
     if name_len <= 15:
         font_size = 44
@@ -150,24 +157,19 @@ def p1_cover(c, data):
     else:
         font_size = 22
     
-    # Split program name by spaces for potential multiline
     words = program_name.split()
     if len(words) > 2 and name_len > 20:
-        # Two lines
         mid = len(words) // 2
         line1 = ' '.join(words[:mid])
         line2 = ' '.join(words[mid:])
         tc(c, line1, W/2, ty + 15, 'Helvetica-Bold', font_size, WHITE)
         tc(c, line2, W/2, ty - 20, 'Helvetica-Bold', font_size, GOLD)
     else:
-        # Single line
         tc(c, program_name, W/2, ty, 'Helvetica-Bold', font_size, WHITE)
     
-    # VOL badge
     rrect(c, W/2-35, ty-60, 70, 18, 3, GOLD_DIM, GOLD, 0.8)
     tc(c, data.get('volume', 'VOL.1'), W/2, ty-54, 'Helvetica-Bold', 9, GOLD)
     
-    # CLIENT CARD
     by = 130
     rrect(c, STRIPE_W+16, by, W-STRIPE_W-32, 54, 6, Color(0,0,0,0.78), GOLD, 1.2)
     fill_rect(c, STRIPE_W+16, by, 4, 54, GOLD)
@@ -175,7 +177,6 @@ def p1_cover(c, data):
     tl(c, data.get('client_name', 'CLIENT'), STRIPE_W+28, by+16, 'Helvetica-Bold', 28, WHITE)
     tr(c, data.get('goal', 'FITNESS'), W-24, by+30, 'Helvetica', 8.5, GOLD)
     
-    # INFO PILLS
     pw = (W - STRIPE_W - 36) / 3 - 5
     pills = [
         ('DURATION', data.get('duration', '8 WEEKS')),
@@ -188,7 +189,6 @@ def p1_cover(c, data):
         tl(c, lbl, px+10, by-24, 'Helvetica', 7, GRAY)
         tl(c, val, px+10, by-44, 'Helvetica-Bold', 12, GOLD)
     
-    # FOOTER
     fill_rect(c, 0, 0, W, 40, Color(0,0,0,0.88))
     hline(c, 0, 40, W, GOLD, 0.8)
     tl(c, data.get('instagram', '@coach.teka1'), STRIPE_W+16, 15, 'Helvetica', 8, GOLD)
@@ -196,13 +196,21 @@ def p1_cover(c, data):
     tr(c, f'Coach {data.get("coach_name", "AHMED TEKA")}', W-14, 15, 'Helvetica-Bold', 9, GOLD)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 2 — INTRODUCTION
 # ═══════════════════════════════════════════════
 
 def p2_intro(c, data):
     fill_bg(c)
+    
+    # Intro photo - AhmedTeka_image4.jpeg
+    intro_photo = 'images/AhmedTeka_image4.jpeg'
+    try:
+        if os.path.exists(intro_photo):
+            c.drawImage(intro_photo, 0, 0, W, H, preserveAspectRatio=True)
+    except:
+        pass
+    
     c.setFillColor(Color(0, 0, 0, alpha=0.75))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     chrome(c, 'INTRODUCTION', 2, data)
@@ -247,13 +255,7 @@ def p2_intro(c, data):
     hline(c, rx, ty2-5, rw, GOLD3, 0.5)
     ty2 -= 18
     
-    timeline = data.get('timeline', [
-        {'week': 'WEEK 1-2', 'phase': 'FOUNDATION', 'desc': 'Master form.'},
-        {'week': 'WEEK 3-4', 'phase': 'PROGRESSION', 'desc': 'Increase load.'},
-        {'week': 'WEEK 5-6', 'phase': 'INTENSIFICATION', 'desc': 'Push beyond.'},
-        {'week': 'WEEK 7-8', 'phase': 'PEAK OUTPUT', 'desc': 'Maximum effort.'},
-    ])
-    
+    timeline = data.get('timeline', [])
     for i, ph in enumerate(timeline):
         ch = 74
         rrect(c, rx, ty2-ch, rw, ch, 5, BG3, GOLD3 if i>0 else GOLD, 0.6)
@@ -270,7 +272,6 @@ def p2_intro(c, data):
     c.line(sx2, y-18, sx2, stats_y+52); c.setDash([])
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 3 — WARM UP
 # ═══════════════════════════════════════════════
@@ -487,7 +488,16 @@ def p8_coach(c, data):
     for i in range(0, int(W)+30, 28): c.line(i, 0, i, H)
     for j in range(0, int(H)+30, 28): c.line(0, j, W, j)
     
-    grad_v(c, 0, 0, W, H, BG4, BG)
+    # Coach photo - AhmedTeka_image3.jpeg
+    coach_photo = 'images/AhmedTeka_image3.jpeg'
+    try:
+        if os.path.exists(coach_photo):
+            c.drawImage(coach_photo, 0, 0, W, H, preserveAspectRatio=True)
+        else:
+            raise Exception()
+    except:
+        grad_v(c, 0, 0, W, H, BG4, BG)
+    
     c.setFillColor(Color(0, 0, 0, alpha=0.55))
     c.rect(0, 0, W, H, stroke=0, fill=1)
     left_stripe(c)
@@ -527,7 +537,6 @@ def p8_coach(c, data):
     
     tr(c, f'{TOTAL_PAGES} / {TOTAL_PAGES}', W-14, BOT_BAND/2-4, 'Helvetica-Bold', 9, GOLD)
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # BUILD FUNCTION
 # ═══════════════════════════════════════════════
