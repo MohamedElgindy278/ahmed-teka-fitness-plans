@@ -10,105 +10,117 @@ st.markdown("""
 *{font-family:'Cairo',sans-serif!important}
 .main-header{background:linear-gradient(135deg,#F8F8F8,#E8F5F0);padding:1.5rem;border-radius:15px;text-align:center;border:2px solid #2E7D64;margin-bottom:1.5rem}
 .main-header h1{color:#2E7D64;font-size:2rem;font-weight:900;margin:0}
-.stButton>button{background:linear-gradient(135deg,#2E7D64,#3A9B7A);color:#FFF;font-weight:700;font-size:1.2rem;padding:1rem;border-radius:10px;border:none;width:100%}
-.stButton>button:hover{background:linear-gradient(135deg,#3A9B7A,#D4AF37)}
+.main-header p{color:#555;margin:0.3rem 0 0 0}
+.stButton>button{background:linear-gradient(135deg,#2E7D64,#4CAF50);color:#FFF;font-weight:700;font-size:1.2rem;padding:1rem;border-radius:10px;border:none;width:100%}
+.stButton>button:hover{background:linear-gradient(135deg,#4CAF50,#81C784)}
 label{color:#2E7D64!important;font-weight:600!important}
-input,textarea,select{background-color:#FFF!important;color:#1A1A1A!important;border:2px solid #E0E0E0!important;border-radius:8px!important}
+input,textarea,select{background-color:#FFF!important;color:#1A1A1A!important;border:2px solid #C8E6C9!important;border-radius:8px!important}
 input:focus,textarea:focus{border-color:#2E7D64!important;box-shadow:0 0 5px rgba(46,125,100,0.3)!important}
 .day-header{background:linear-gradient(135deg,#E8F5F0,#FFF);padding:1rem;border-radius:10px;border-left:5px solid #2E7D64;margin:1rem 0}
+.day-header h4{color:#1B5E20;margin:0}
 .success-box{background:linear-gradient(135deg,#E8F5F0,#FFF);border:2px solid #2E7D64;border-radius:10px;padding:2rem;text-align:center;color:#2E7D64;font-size:1.3rem;font-weight:700}
+.section-desc{color:#777;font-size:0.85rem;margin-bottom:1rem}
+.gen-btn>button{background:linear-gradient(135deg,#2E7D64,#D4AF37)!important;font-size:1.4rem!important;padding:1.5rem!important;font-weight:900!important;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,125,100,0.4)}70%{box-shadow:0 0 0 20px rgba(46,125,100,0)}100%{box-shadow:0 0 0 0 rgba(46,125,100,0)}}
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header"><h1>🥗 AHMED TEKA — NUTRITION PLAN</h1><p>Personalized Meal Plan Generator</p></div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header"><h1>🥗 AHMED TEKA — NUTRITION PLAN</h1><p>Professional · Personalized Meal Plan Generator</p></div>', unsafe_allow_html=True)
 
 with st.form('nutrition_form'):
-    # ═══════════════════════════════════
-    # CLIENT INFORMATION
-    # ═══════════════════════════════════
-    st.markdown('## 👤 CLIENT INFORMATION')
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        client_name = st.text_input('Client Name', 'Mohamed', help='Name on the cover page')
-        age = st.text_input('Age', '28', help='Client age')
-        weight = st.text_input('Weight (kg)', '80', help='Current weight')
-    with col2:
-        full_name = st.text_input('Full Name', 'Mohamed Ahmed', help='Full name for profile page')
-        height = st.text_input('Height (cm)', '175', help='Client height')
-        goal = st.text_input('Goal', 'Muscle Building', help='Training goal')
-    with col3:
-        duration = st.text_input('Duration', '12 Weeks', help='Plan duration')
-        meals_count = st.text_input('Meals per Day', '4', help='Number of meals')
-        start_date = st.text_input('Start Date', datetime.now().strftime('%B %Y').upper(), help='Start month/year')
+    # ═══════════════════════════════════════════════
+    # COVER PAGE INFO
+    # ═══════════════════════════════════════════════
+    st.markdown('## 📋 COVER PAGE INFORMATION')
+    st.markdown('<p class="section-desc">These details appear on the cover page of the PDF.</p>', unsafe_allow_html=True)
     
-    notes = st.text_area('Coach Notes', 'Customized meal plan for muscle building under Coach Ahmed Teka supervision.', height=70)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        client_name = st.text_input('👤 Client Name', 'محمد', help='Client name displayed prominently on the cover page.')
+        full_name = st.text_input('📛 Full Name', 'محمد أحمد', help='Full name for the profile page.')
+        age = st.text_input('🎂 Age', '28 سنة', help='Client age.')
+    with c2:
+        weight = st.text_input('⚖️ Weight', '80 كجم', help='Current body weight.')
+        height = st.text_input('📏 Height', '175 سم', help='Client height.')
+        goal = st.text_input('🎯 Goal', 'بناء عضلي', help='Primary nutrition goal. Examples: بناء عضلي, تنشيف, زيادة وزن')
+    with c3:
+        duration = st.text_input('⏱️ Duration', '12 أسبوع', help='Plan duration. Example: 12 أسبوع, 8 أسابيع')
+        meals_count = st.text_input('🍽️ Meals Count', '4 وجبات', help='Number of meals per day. Example: 4 وجبات, 5 وجبات')
+        start_date = st.text_input('📅 Start Date', 'يونيو 2026', help='Program start month/year.')
     
-    # ═══════════════════════════════════
-    # MACRONUTRIENTS
-    # ═══════════════════════════════════
+    notes = st.text_area('📝 Coach Notes', 'نظام مخصص بالكامل لزيادة الكتلة العضلية تحت إشراف المدرب أحمد تيكا', height=70,
+        help='Special notes from the coach. Appears on the profile page.')
+    
+    # ═══════════════════════════════════════════════
+    # MACROS
+    # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## 📊 MACRONUTRIENTS')
+    st.markdown('<p class="section-desc">Daily macronutrient distribution.</p>', unsafe_allow_html=True)
     
-    mcol1, mcol2, mcol3, mcol4 = st.columns(4)
-    with mcol1:
-        protein_g = st.text_input('Protein (g/day)', '180')
-    with mcol2:
-        carbs_g = st.text_input('Carbs (g/day)', '280')
-    with mcol3:
-        fat_g = st.text_input('Fat (g/day)', '65')
-    with mcol4:
-        water = st.text_input('Water (L/day)', '4-6')
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        protein_g = st.text_input('🥩 Protein (g/day)', '180', help='Daily protein intake in grams.')
+    with m2:
+        carbs_g = st.text_input('🍚 Carbs (g/day)', '280', help='Daily carbohydrate intake in grams.')
+    with m3:
+        fat_g = st.text_input('🧈 Fat (g/day)', '65', help='Daily fat intake in grams.')
+    with m4:
+        main_meals = st.text_input('🍽️ Main Meals/Day', '4', help='Number of main meals per day.')
     
-    total_calories = st.text_input('Total Daily Calories', '2502')
+    total_calories = st.text_input('🔥 Total Daily Calories', '2502', help='Total daily caloric intake.')
     
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     # MEALS
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## 🍽️ MEALS')
+    st.markdown('<p class="section-desc">Configure each meal with its details.</p>', unsafe_allow_html=True)
     
-    num_meals = st.number_input('Number of meals', 1, 8, 4)
+    num_meals = st.number_input('Number of meals', 1, 8, 4, help='How many meals in the plan? (1-8)')
     meals = []
     
-    food_icons = ['🍳 Breakfast', '💪 Pre-Workout', '🍗 Lunch', '🥗 Dinner', '🍝 Snack 1', '🥤 Snack 2']
+    food_icons = ['🥣 Breakfast', '💪 Pre-Workout', '🍗 Lunch', '🥗 Dinner', '🍝 Snack 1', '🥤 Snack 2', '🍎 Snack 3', '🥜 Snack 4']
     
     for i in range(int(num_meals)):
-        st.markdown(f'<div class="day-header"><h4>{food_icons[i] if i < 6 else "🍽️"} Meal {i+1}</h4></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="day-header"><h4>{food_icons[i] if i < 8 else "🍽️"} Meal {i+1}</h4></div>', unsafe_allow_html=True)
         
-        mc1, mc2 = st.columns([2,1])
+        mc1, mc2 = st.columns([2, 1])
         with mc1:
-            meal_name = st.text_input(f'Meal Name {i+1}', 
-                value=['Breakfast', 'Pre-Workout Meal', 'Lunch', 'Dinner'][i] if i < 4 else f'Meal {i+1}',
-                key=f'name_{i}')
+            meal_name = st.text_input(f'🍳 Meal Name {i+1}',
+                value=['وجبة الإفطار', 'وجبة ما قبل التمرين', 'الوجبة الرئيسية الثالثة', 'وجبة العشاء'][i] if i < 4 else f'وجبة {i+1}',
+                key=f'name_{i}', help=f'Name of meal {i+1}.')
         with mc2:
-            meal_type = st.text_input(f'Type {i+1}', value=f'Meal {i+1}', key=f'type_{i}')
+            meal_type = st.text_input(f'📋 Meal Type {i+1}',
+                value=['الوجبة الأولى', 'الوجبة الثانية', 'الوجبة الثالثة', 'الوجبة الرابعة'][i] if i < 4 else f'الوجبة {i+1}',
+                key=f'type_{i}', help=f'Type/label for meal {i+1}.')
         
         mc3, mc4, mc5, mc6 = st.columns(4)
         with mc3:
-            meal_cal = st.text_input(f'Calories {i+1}', value=['747','750','523','482'][i] if i < 4 else '400', key=f'cal_{i}')
+            meal_cal = st.text_input(f'🔥 Calories {i+1}', value=['747','750','523','482'][i] if i < 4 else '400', key=f'cal_{i}', help=f'Calories for meal {i+1}.')
         with mc4:
-            meal_protein = st.text_input(f'Protein (g) {i+1}', value=['36','55','45','42'][i] if i < 4 else '30', key=f'prot_{i}')
+            meal_protein = st.text_input(f'🥩 Protein (g) {i+1}', value=['36','55','45','42'][i] if i < 4 else '30', key=f'prot_{i}', help=f'Protein in grams for meal {i+1}.')
         with mc5:
-            meal_carbs = st.text_input(f'Carbs (g) {i+1}', value=['110','110','55','15'][i] if i < 4 else '40', key=f'carb_{i}')
+            meal_carbs = st.text_input(f'🍚 Carbs (g) {i+1}', value=['110','110','55','15'][i] if i < 4 else '40', key=f'carb_{i}', help=f'Carbs in grams for meal {i+1}.')
         with mc6:
-            meal_fat = st.text_input(f'Fat (g) {i+1}', value=['18','36','18','12'][i] if i < 4 else '15', key=f'fat_{i}')
+            meal_fat = st.text_input(f'🧈 Fat (g) {i+1}', value=['18','36','18','12'][i] if i < 4 else '15', key=f'fat_{i}', help=f'Fat in grams for meal {i+1}.')
         
-        ingredients = st.text_area(f'Ingredients {i+1} (one per line)',
+        ingredients = st.text_area(f'🛒 Ingredients {i+1} (one per line)',
             value='\n'.join([
-                'Oats 100g', 'Whole milk 200ml', 'Banana 1', 'Nuts 1 tbsp',
-                'White rice 150g', 'Chicken breast 200g', 'Mixed vegetables', 'Olive oil 1 tbsp',
-                'Brown rice 100g', 'Ground beef 150g', 'Tomato & onion', 'Salad',
-                'Eggs 3', 'Cottage cheese 100g', 'Cucumber & tomato', 'Olive oil 1 tbsp',
-            ][i*4:(i+1)*4]) if i < 4 else 'Food item 1\nFood item 2\nFood item 3\nFood item 4',
-            height=80, key=f'ing_{i}')
+                'شيكلات أوتس 100 جم', 'حليب كامل الدسم 200 مل', 'موز حبة واحدة', 'مكسرات ملعقة كبيرة',
+                'أرز أبيض مسلوق 150 جم', 'صدر دجاج مشوي 200 جم', 'خضار مشكلة', 'زيت زيتون ملعقة',
+                'أرز بني 100 جم', 'لحم بقري مفروم 150 جم', 'طماطم وبصل', 'خضار سلطة',
+                'بيض 3 حبات', 'جبن قريش 100 جم', 'خيار وطماطم', 'زيت زيتون ملعقة',
+            ][i*4:(i+1)*4]) if i < 4 else 'مكون 1\nمكون 2\nمكون 3\nمكون 4',
+            height=80, key=f'ing_{i}', help=f'Ingredients for meal {i+1}. One per line.')
         
-        alternative = st.text_input(f'Healthy Alternative {i+1}',
-            value=['Can replace oats with 4 toast + 2 boiled eggs',
-                   'Can replace rice with 200g boiled potato',
-                   'Can replace beef with 200g tuna',
-                   'Can replace eggs with 120g chicken breast'][i] if i < 4 else 'Healthy alternative option',
-            key=f'alt_{i}')
+        alternative = st.text_input(f'🔄 Healthy Alternative {i+1}',
+            value=['يمكن استبدال الأوتس بـ 4 توست + بيضتان مسلوقتان',
+                   'يمكن استبدال الأرز بـ بطاطس مسلوقة 200 جم',
+                   'يمكن استبدال اللحم بـ سمك تونة 200 جم',
+                   'يمكن استبدال البيض بـ صدر دجاج 120 جم'][i] if i < 4 else 'بديل صحي',
+            key=f'alt_{i}', help=f'Healthy alternative for meal {i+1}.')
         
         meals.append({
             'name': meal_name, 'type': meal_type,
@@ -118,22 +130,39 @@ with st.form('nutrition_form'):
             'alternative': alternative,
         })
     
-    # ═══════════════════════════════════
-    # GUIDELINES & SUPPLEMENTS
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
+    # GUIDELINES
+    # ═══════════════════════════════════════════════
     st.markdown('---')
-    st.markdown('## 📋 GUIDELINES & SUPPLEMENTS')
+    st.markdown('## 📋 GUIDELINES')
+    st.markdown('<p class="section-desc">Daily guidelines and rules for the client.</p>', unsafe_allow_html=True)
     
-    meal_timing = st.text_area('Meal Timing', '2-3 hours between meals to boost metabolism and recovery.', height=60)
-    food_weighing = st.text_area('Food Weighing', 'Weigh food after cooking for accurate calorie tracking.', height=60)
-    drinks = st.text_area('Drinks', 'No sugary drinks or sweetened beverages. Only water and unsweetened tea.', height=60)
-    sweets = st.text_area('Restricted Foods', 'Sugar and processed products are prohibited to maintain cortisol levels.', height=60)
-    omega = st.text_input('Omega 3', '3-5g Omega 3 daily distributed across meals')
+    water = st.text_input('💧 Daily Water Intake', '4-6 لتر', help='Recommended daily water intake.')
     
-    st.markdown('**Supplements**')
-    sup_text = st.text_area('Supplements (name | dose | benefit per line)',
-        'Vitamin D3 | 2000 IU | Immune & bone support\nOmega 3 | Daily | Joint & heart health\nC + Zinc | Daily | Immunity + muscle recovery',
-        height=80)
+    g1, g2 = st.columns(2)
+    with g1:
+        meal_timing = st.text_area('⏰ Meal Timing', 'الفترة بين الوجبات 2-3 ساعات لتعزيز الأيض والاستشفاء', height=70,
+            help='Guidelines for meal spacing and timing.')
+        drinks = st.text_area('🥤 Drinks', 'ممنوع السكريات والمشروبات المحلاة، فقط ماء وشاي بدون سكر', height=70,
+            help='Allowed and prohibited drinks.')
+    with g2:
+        food_weighing = st.text_area('⚖️ Food Weighing', 'وزن الأطعمة بالميزان بعد الطهي لضبط السعرات بدقة', height=70,
+            help='Instructions for weighing and measuring food.')
+        sweets = st.text_area('🚫 Restricted Foods', 'السكريات والمنتجات المصنعة ممنوعة للحفاظ على الكورتيزول', height=70,
+            help='Foods to avoid during the plan.')
+    
+    omega = st.text_input('🐟 Omega-3', '5-3 جم أوميجا 3 يومياً موزعاً على الوجبات', help='Omega-3 supplementation guidelines.')
+    
+    # ═══════════════════════════════════════════════
+    # SUPPLEMENTS
+    # ═══════════════════════════════════════════════
+    st.markdown('---')
+    st.markdown('## 💊 SUPPLEMENTS')
+    st.markdown('<p class="section-desc">Enter supplements (name | dose | benefit per line).</p>', unsafe_allow_html=True)
+    
+    sup_text = st.text_area('Supplements (name | dose | benefit)',
+        'Vitamin D3 | 2000 IU | دعم المناعة والعظام\nOmega 3 | يومياً | صحة المفاصل والقلب\nC + Zinc | يومياً | مناعة + تعافي عضلي',
+        height=80, help='Format: Name | Dose | Benefit. One supplement per line.')
     
     supplements = []
     for line in sup_text.split('\n'):
@@ -141,10 +170,16 @@ with st.form('nutrition_form'):
             parts = line.split('|')
             supplements.append({'name': parts[0].strip(), 'dose': parts[1].strip(), 'benefit': parts[2].strip() if len(parts) > 2 else ''})
     
-    st.markdown('**Pre-Workout Protocol**')
-    pw_text = st.text_area('Pre-workout (time | item per line)',
-        '45 min before | 30g protein + 100g dates + fresh pomegranate juice\n30 min before | Cup of black coffee without sugar',
-        height=80)
+    # ═══════════════════════════════════════════════
+    # PRE-WORKOUT
+    # ═══════════════════════════════════════════════
+    st.markdown('---')
+    st.markdown('## ⚡ PRE-WORKOUT PROTOCOL')
+    st.markdown('<p class="section-desc">Enter pre-workout items (time | item per line).</p>', unsafe_allow_html=True)
+    
+    pw_text = st.text_area('Pre-workout (time | item)',
+        'قبل 45 دقيقة | 30 جرام بروتين + 100 جرام تمر + عصير رمان طازج\nقبل 30 دقيقة | فنجان قهوة سوداء بدون سكر',
+        height=80, help='Format: Time | Item. One per line.')
     
     preworkout = []
     for line in pw_text.split('\n'):
@@ -152,51 +187,66 @@ with st.form('nutrition_form'):
             parts = line.split('|')
             preworkout.append({'time': parts[0].strip(), 'item': parts[1].strip()})
     
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     # RECIPES
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     st.markdown('---')
     st.markdown('## 🍳 RECIPES')
+    st.markdown('<p class="section-desc">6 recipe cards for the recipe library page.</p>', unsafe_allow_html=True)
     
     recipes = []
     for i in range(6):
-        rc1, rc2 = st.columns([2,1])
+        rc1, rc2, rc3 = st.columns([2, 2, 1])
         with rc1:
-            rname = st.text_input(f'Recipe Name {i+1}', 
-                value=['Oatmeal Protein', 'Chicken Breast', 'Healthy Rice', 'Fruit Salad', 'Protein Pack', 'Magic Smoothie'][i],
-                key=f'rname_{i}')
+            rname = st.text_input(f'📛 Recipe Name {i+1}',
+                value=['السيرة', 'صدور الدجاج', 'الأرز الصحي', 'سلطة فواكه', 'الباكيج الصحي', 'الوجبة السحرة'][i],
+                key=f'rname_{i}', help=f'Name of recipe {i+1}.')
         with rc2:
-            rlink = st.text_input(f'YouTube Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}')
-        rdesc = st.text_input(f'Description {i+1}', 'Delicious and healthy recipe', key=f'rdesc_{i}')
+            rdesc = st.text_input(f'📝 Description {i+1}',
+                value=['شوربة احترافي', 'تتبيل مثالي وإتقان', 'طريقة طهي صحية', 'وصفة غنية غذائياً', 'بروتين + طاقة', 'سناكس مستقبلة'][i],
+                key=f'rdesc_{i}', help=f'Short description of recipe {i+1}.')
+        with rc3:
+            rlink = st.text_input(f'🔗 Link {i+1}', 'https://youtube.com/watch?v=example', key=f'rlink_{i}', help=f'YouTube link for recipe {i+1}.')
         recipes.append({'name': rname, 'desc': rdesc, 'link': rlink})
     
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     # COACH INFO
-    # ═══════════════════════════════════
+    # ═══════════════════════════════════════════════
     st.markdown('---')
-    st.markdown('## 🧑‍🏫 COACH INFO')
+    st.markdown('## 🧑‍🏫 COACH INFORMATION')
+    st.markdown('<p class="section-desc">Your contact details for the PDF.</p>', unsafe_allow_html=True)
     
-    coach_name = st.text_input('Coach Name', 'AHMED TEKA')
-    instagram = st.text_input('Instagram', '@coach.teka1')
-    phone = st.text_input('Phone', '01033047057')
+    cc1, cc2, cc3 = st.columns(3)
+    with cc1:
+        coach_name = st.text_input('Coach Name', 'Ahmed Teka', help='Your full name.')
+    with cc2:
+        instagram = st.text_input('Instagram', '@coach.teka1', help='Your Instagram handle.')
+    with cc3:
+        phone = st.text_input('Phone', '01033047057', help='Your phone number.')
     
+    # ═══════════════════════════════════════════════
+    # GENERATE BUTTON
+    # ═══════════════════════════════════════════════
+    st.markdown('---')
+    st.markdown('<div class="gen-btn">', unsafe_allow_html=True)
     submitted = st.form_submit_button('🥗 GENERATE NUTRITION PLAN PDF', use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if submitted:
     if not client_name:
-        st.error('Please enter client name')
+        st.error('❌ Please enter client name.')
     else:
-        with st.spinner('Creating your nutrition plan...'):
+        with st.spinner('🔄 Creating your premium nutrition plan...'):
             try:
                 data = {
                     'client_name': client_name, 'full_name': full_name,
                     'age': age, 'weight': weight, 'height': height,
                     'goal': goal, 'notes': notes,
-                    'duration': duration, 'meals_count': f'{meals_count} Meals',
+                    'duration': duration, 'meals_count': meals_count,
                     'start_date': start_date,
                     'protein_g': protein_g, 'carbs_g': carbs_g, 'fat_g': fat_g,
-                    'water': f'{water} L', 'total_calories': total_calories,
-                    'meals': meals,
+                    'main_meals': main_meals, 'total_calories': total_calories,
+                    'water': water, 'meals': meals,
                     'meal_timing': meal_timing, 'food_weighing': food_weighing,
                     'drinks': drinks, 'sweets': sweets, 'omega': omega,
                     'supplements': supplements, 'preworkout': preworkout,
@@ -209,7 +259,9 @@ if submitted:
                 st.download_button('📥 DOWNLOAD PDF', data=pdf_bytes, file_name=f'AhmedTeka_Nutrition_{client_name}.pdf', mime='application/pdf', use_container_width=True)
                 
             except Exception as e:
-                st.error(f'Error: {str(e)}')
+                st.error(f'❌ Error: {str(e)}')
+                import traceback
+                st.code(traceback.format_exc())
 
 st.markdown('---')
-st.markdown('<p style="text-align:center;color:#666">© AHMED TEKA · @coach.teka1 · 01033047057</p>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center;color:#777">© AHMED TEKA · @coach.teka1 · 01033047057</p>', unsafe_allow_html=True)
