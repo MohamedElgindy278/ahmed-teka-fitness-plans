@@ -432,13 +432,13 @@ def p6_coach(c, data):
     bx_start = W/2 - total_w/2
 
     for i, (lbl, color) in enumerate([
-    (f'@{data.get("instagram", "coach.teka1")}', GREEN),
-    (data.get('phone', '01033047057'), GOLD),
+        (f'@{data.get("instagram", "coach.teka1")}', GREEN),
+        (data.get('phone', '01033047057'), GOLD),
     ]):
-    bx = bx_start + i*(btn_w+15)
-    by = 10
-    rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.5), color, 1)
-    tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'Helvetica-Bold', 10, WHITE)
+        bx = bx_start + i*(btn_w+15)
+        by = 10
+        rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.5), color, 1)
+        tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'Helvetica-Bold', 10, WHITE)
     
     c.showPage()
 
