@@ -336,29 +336,17 @@ def p2_profile(c, data):
 
 def p3_meals(c, data):
     fill_bg(c, BG_CREAM)
+    
+    # Add background image - full page
+    bg_image = 'images/p3MEAlS.png'
+    try:
+        if os.path.exists(bg_image):
+            c.drawImage(bg_image, 0, 0, W, H, preserveAspectRatio=True, alpha=0.10)
+    except:
+        pass
+    
     chrome(c, 'DAILY MEAL PLAN', 3, data)
     x, y, cw = content_area()
-    
-    # Food background pattern - subtle and elegant
-    c.saveState()
-    c.setFillColor(Color(0.18, 0.49, 0.20, 0.03))  # Very light green
-    
-    # Draw subtle food-related circles pattern
-    c.setStrokeColor(Color(0.18, 0.49, 0.20, 0.04))
-    c.setLineWidth(0.3)
-    
-    # Pattern of small circles and arcs (like plates/spices)
-    for row in range(0, int(H), 50):
-        for col in range(0, int(W), 50):
-            # Small plate circles
-            c.circle(col+25, row+25, 15, fill=0, stroke=1)
-            c.circle(col+25, row+25, 8, fill=0, stroke=1)
-            # Tiny dots like spices
-            c.circle(col+10, row+10, 2, fill=1, stroke=0)
-            c.circle(col+40, row+40, 1.5, fill=1, stroke=0)
-            c.circle(col+15, row+35, 1, fill=1, stroke=0)
-    
-    c.restoreState()
     
     tc(c, 'DAILY MEAL PLAN', x + cw/2, y - 10, 'P-Bold', 24, GREEN)
     hline(c, x, y - 18, cw, GREEN, 0.8)
@@ -369,7 +357,8 @@ def p3_meals(c, data):
     for i, meal in enumerate(meals[:6]):
         mh = 120
         
-        rrect(c, x, my-mh, cw, mh-3, 7, WHITE, GREEN_DIM, 0.3)
+        # Semi-transparent white background for readability
+        rrect(c, x, my-mh, cw, mh-3, 7, Color(1,1,1,0.92), GREEN_DIM, 0.3)
         fill_rect(c, x, my-mh, 4, mh, GREEN)
         
         # Meal icon from URL
@@ -411,7 +400,6 @@ def p3_meals(c, data):
         tc(c, f'Total: {data.get("total_calories", "0")} kcal/day', x + cw/2, my-16, 'P-Bold', 15, GREEN)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 4 - GUIDELINES
 # ═══════════════════════════════════════════════
