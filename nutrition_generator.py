@@ -401,7 +401,7 @@ def p2_profile(c, data):
         else:
             tl(c, val, ix+10, iy-30, 'P-Bold', 16, BLACK)
 
-    ny = py - 130
+    ny = py - (((len(info_items) // 2) + 1) * 52) - 10
     if data.get('notes'):
         rrect(c, x, ny-42, cw, 40, 5, WHITE, GREEN_DIM, 0.4)
         tl(c, 'COACH NOTES:', x+10, ny-14, 'P-Bold', 10, GREEN)
