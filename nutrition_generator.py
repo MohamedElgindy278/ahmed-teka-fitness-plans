@@ -709,7 +709,7 @@ def p6_coach(c, data):
 def generate_nutrition_pdf(data):
     buffer = io.BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
-    c.setTitle('AHMED TEKA - Nutrition Plan')
+    c.setTitle('AHMED TEKA - Diet Plan')
     c.setAuthor('AHMED TEKA')
 
     p1_cover(c, data)
