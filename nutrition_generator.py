@@ -12,32 +12,118 @@ import arabic_reshaper
 from bidi.algorithm import get_display
 
 W, H = A4
-# ═══════════════════════════════════════════════
-# FONTS - Same logic as workout_generator.py
-# ═══════════════════════════════════════════════
-try:
-    font_paths = [
+
+# ═══════════════════════════════════════
+# FONT SETUP - Safe with guaranteed fallback
+# ═══════════════════════════════════════
+
+FONT_PATHS = [
+    (
         'C:/Windows/Fonts/arial.ttf',
+        'C:/Windows/Fonts/arialbd.ttf'
+    ),
+    (
         '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+        '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+    ),
+    (
         '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
-    ]
-    font_path = None
-    for fp in font_paths:
-        if os.path.exists(fp):
-            font_path = fp
-            break
+        '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'
+    ),
+    (
+        '/usr/share/fonts/truetype/freefont/FreeSans.ttf',
+        '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'
+    ),
+]
+
+def _register_builtin_fallbacks():
+    """
+    ReportLab's built-in fonts are ALWAYS available — no file needed.
+    Map our custom names to Helvetica (clean sans-serif, similar to Arial).
+    """
+    from reportlab.lib.fonts import addMapping
+    pdfmetrics.registerFont(pdfmetrics.getFont('Helvetica'))
     
-    if font_path:
-        pdfmetrics.registerFont(TTFont('P-Reg', font_path))
-        bold_path = font_path.replace('.ttf','bd.ttf').replace('Sans','Sans-Bold').replace('Regular','Bold')
-        if os.path.exists(bold_path):
-            pdfmetrics.registerFont(TTFont('P-Bold', bold_path))
-        else:
-            pdfmetrics.registerFont(TTFont('P-Bold', font_path))
-        pdfmetrics.registerFont(TTFont('P-Light', font_path))
-        pdfmetrics.registerFont(TTFont('P-Med', font_path))
-except:
-    pass 
+    # Create aliases so 'P-Reg', 'P-Bold', etc. always resolve
+    for alias, builtin in [
+        ('P-Reg',   'Helvetica'),
+        ('P-Bold',  'Helvetica-Bold'),
+        ('P-Light', 'Helvetica'),
+        ('P-Med',   'Helvetica'),
+    ]:
+        # Only register if not already registered
+        try:
+            pdfmetrics.getFont(alias)
+        except KeyError:
+            # Register the built-in under our alias name
+            pdfmetrics.registerFontFamily(
+                alias,
+                normal=builtin,
+                bold=builtin,
+            )
+            # Simpler: just re-register the built-in TTF wrapper
+            # Actually for built-ins we need this approach:
+            pass
+
+def setup_fonts():
+    """
+    Try to load a real TTF font.
+    If everything fails, fall back to Helvetica (always works).
+    """
+    # Step 1: Try each font path
+    for reg_path, bold_path in FONT_PATHS:
+        if not os.path.exists(reg_path):
+            continue
+        try:
+            pdfmetrics.registerFont(TTFont('P-Reg', reg_path))
+            pdfmetrics.registerFont(TTFont('P-Light', reg_path))
+            pdfmetrics.registerFont(TTFont('P-Med', reg_path))
+            
+            if os.path.exists(bold_path):
+                pdfmetrics.registerFont(TTFont('P-Bold', bold_path))
+            else:
+                # Bold file missing — use regular as bold (not ideal, but won't crash)
+                pdfmetrics.registerFont(TTFont('P-Bold', reg_path))
+            
+            print(f"[Fonts] Loaded: {reg_path}")
+            return  # ✅ Success — stop here
+        except Exception as e:
+            print(f"[Fonts] Failed to load {reg_path}: {e}")
+            continue
+    
+    # Step 2: All paths failed — use ReportLab built-ins (Helvetica)
+    print("[Fonts] WARNING: No TTF found — using built-in Helvetica fallback")
+    _use_helvetica_fallback()
+
+def _use_helvetica_fallback():
+    """Map P-* names to ReportLab's built-in Helvetica fonts."""
+    # Built-ins don't need TTFont — they're already in ReportLab
+    # We register dummy TTFont wrappers pointing to the built-in names
+    # Instead, we override the draw functions or use a different approach.
+    #
+    # SIMPLEST approach: patch the font name constants globally
+    import sys, types
+    
+    # We can't "alias" built-ins easily, so we write a tiny shim:
+    # Replace calls to 'P-Bold' etc. with 'Helvetica-Bold' etc.
+    global FONT_MAP
+    FONT_MAP = {
+        'P-Reg':   'Helvetica',
+        'P-Bold':  'Helvetica-Bold',
+        'P-Light': 'Helvetica',
+        'P-Med':   'Helvetica',
+    }
+
+# Global font map — identity by default (TTF loaded fine)
+FONT_MAP = {
+    'P-Reg':   'P-Reg',
+    'P-Bold':  'P-Bold',
+    'P-Light': 'P-Light',
+    'P-Med':   'P-Med',
+}
+
+# Run on import
+setup_fonts()
 
 # ═══════════════════════════════════════════════
 # ARABIC HELPER
@@ -142,13 +228,13 @@ def rrect(c, x, y, w, h, r, fc, sc=None, sw=0.5):
     c.drawPath(p, fill=1, stroke=1 if sc else 0)
 
 def tl(c, s, x, y, f='P-Reg', sz=10, col=BLACK):
-    c.setFillColor(col); c.setFont(f, sz); c.drawString(x, y, ar(s))
+    c.setFillColor(col); c.setFont(FONT_MAP.get(f, f), sz); c.drawString(x, y, ar(s))
 
 def tc(c, s, x, y, f='P-Reg', sz=10, col=BLACK):
-    c.setFillColor(col); c.setFont(f, sz); c.drawCentredString(x, y, ar(s))
+    c.setFillColor(col); c.setFont(FONT_MAP.get(f, f), sz); c.drawCentredString(x, y, ar(s))
 
 def tr(c, s, x, y, f='P-Reg', sz=10, col=BLACK):
-    c.setFillColor(col); c.setFont(f, sz); c.drawRightString(x, y, ar(s))
+    c.setFillColor(col); c.setFont(FONT_MAP.get(f, f), sz); c.drawRightString(x, y, ar(s))
 
 def hline(c, x, y, w, col=GREEN, lw=1.0):
     c.setStrokeColor(col); c.setLineWidth(lw); c.line(x, y, x+w, y)
