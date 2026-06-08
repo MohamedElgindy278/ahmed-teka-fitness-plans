@@ -665,15 +665,13 @@ def p6_coach(c, data):
     c.rect(0, 0, W, H, stroke=0, fill=1)
     stripe(c)
 
+    # اسم الكوتش فوق الصفحة مكان الهيدر
     fill_rect(c, 0, H-48, W, 48, Color(0,0,0,0.8))
     hline(c, 0, H-48, W, GREEN_MID, 0.8)
-    tl(c, 'AHMED', STRIPE_W+16, H-30, 'P-Bold', 18, GREEN_MID)
-    tl(c, 'TEKA',  STRIPE_W+82, H-30, 'P-Bold', 18, WHITE)
-    tr(c, 'YOUR COACH', W-16, H-30, 'P-Reg', 9, GRAY_LIGHT)
+    tc(c, data.get('coach_name', 'AHMED TEKA'), W/2, H-30, 'P-Bold', 48, GREEN_MID)
 
     cy = H * 0.55
-    tc(c, 'AHMED TEKA',      W/2, cy,    'P-Bold', 48, GREEN_MID)
-    tc(c, 'NUTRITION COACH', W/2, cy-34, 'P-Reg',  14, WHITE)
+    tc(c, 'NUTRITION COACH', W/2, cy, 'P-Reg', 14, WHITE)
 
     fill_rect(c, 0, 0, W, 75, Color(0,0,0,0.8))
     hline(c, 0, 75, W, GREEN_MID, 0.7)
@@ -701,7 +699,6 @@ def p6_coach(c, data):
     tr(c, f'{TOTAL_PAGES} / {TOTAL_PAGES}', W-14, 85, 'P-Bold', 9, GREEN_MID)
 
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # BUILD
 # ═══════════════════════════════════════════════
