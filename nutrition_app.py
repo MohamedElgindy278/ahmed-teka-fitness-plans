@@ -249,7 +249,7 @@ if submitted:
                 
                 pdf_bytes = generate_nutrition_pdf(data)
                 st.markdown('<div class="success-box">✅ NUTRITION PLAN PDF GENERATED!</div>', unsafe_allow_html=True)
-                st.download_button('📥 DOWNLOAD PDF', data=pdf_bytes, file_name=f'AhmedTeka_Nutrition_{client_name}.pdf', mime='application/pdf', use_container_width=True)
+                st.download_button('📥 DOWNLOAD PDF', data=pdf_bytes, file_name=f'AhmedTeka_DietPlan_{client_name}.pdf', mime='application/pdf', use_container_width=True)
                 
             except Exception as e:
                 st.error(f'❌ Error: {str(e)}')
