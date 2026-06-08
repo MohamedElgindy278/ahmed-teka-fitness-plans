@@ -14,39 +14,28 @@ from bidi.algorithm import get_display
 W, H = A4
 
 # ═══════════════════════════════════════════════
-# FONTS
+# FONTS - Same logic as workout_generator.py
 # ═══════════════════════════════════════════════
 FONT_PATHS = [
-    ('C:/Windows/Fonts/arial.ttf', 'C:/Windows/Fonts/arialbd.ttf'),
-    ('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'),
-    ('/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf', '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'),
+    'C:/Windows/Fonts/arial.ttf',
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
 ]
 
-P_BOLD_LOADED = False
-for reg_path, bold_path in FONT_PATHS:
-    if os.path.exists(reg_path):
+for fp in FONT_PATHS:
+    if os.path.exists(fp):
         try:
-            pdfmetrics.registerFont(TTFont('P-Reg', reg_path))
+            pdfmetrics.registerFont(TTFont('P-Reg', fp))
+            bold_path = fp.replace('.ttf','bd.ttf').replace('Sans','Sans-Bold').replace('Regular','Bold')
             if os.path.exists(bold_path):
                 pdfmetrics.registerFont(TTFont('P-Bold', bold_path))
-                P_BOLD_LOADED = True
             else:
-                pdfmetrics.registerFont(TTFont('P-Bold', reg_path))
-            pdfmetrics.registerFont(TTFont('P-Light', reg_path))
-            pdfmetrics.registerFont(TTFont('P-Med', reg_path))
+                pdfmetrics.registerFont(TTFont('P-Bold', fp))
+            pdfmetrics.registerFont(TTFont('P-Light', fp))
+            pdfmetrics.registerFont(TTFont('P-Med', fp))
             break
         except:
             pass
-
-# Fallback if no fonts registered
-if not P_BOLD_LOADED:
-    try:
-        pdfmetrics.registerFont(TTFont('P-Reg', reg_path))
-        pdfmetrics.registerFont(TTFont('P-Bold', reg_path))
-        pdfmetrics.registerFont(TTFont('P-Light', reg_path))
-        pdfmetrics.registerFont(TTFont('P-Med', reg_path))
-    except:
-        pass
 
 # ═══════════════════════════════════════════════
 # ARABIC HELPER
