@@ -329,15 +329,15 @@ def p1_cover(c, data):
     c.line(STRIPE_W+20, ty+30, STRIPE_W+20+50, ty+30)
     c.line(W-20-50, ty+30, W-20, ty+30)
     
-    tc(c, 'NUTRITION', W/2, ty+15, 'P-Bold', 48, WHITE)
-    tc(c, 'PLAN', W/2, ty-30, 'P-Bold', 48, GREEN_MID)
-    tc(c, 'Personalized Meal Plan', W/2, ty-55, 'P-Reg', 10, Color(1,1,1,0.6))
+    tc(c, 'NUTRITION', W/2, ty+15, 'P-Bold', 56, WHITE)
+    tc(c, 'PLAN', W/2, ty-30, 'P-Bold', 56, GREEN_MID)
+    tc(c, 'Personalized Meal Plan', W/2, ty-55, 'P-Reg', 12, Color(1,1,1,0.6))
     
     by = 130
     rrect(c, STRIPE_W+16, by, W-STRIPE_W-32, 54, 6, Color(0,0,0,0.78), GREEN_MID, 1.2)
     fill_rect(c, STRIPE_W+16, by, 4, 54, GREEN_MID)
     tl(c, 'CLIENT', STRIPE_W+28, by+40, 'P-Light', 7, GREEN_LIGHT)
-    tr(c, data.get('client_name', 'CLIENT'), W-24, by+16, 'P-Bold', 28, WHITE)
+    tr(c, data.get('client_name', 'CLIENT'), W-24, by+16, 'P-Bold', 32, WHITE)
     
     pw = (W - STRIPE_W - 36) / 3 - 5
     pills = [
@@ -357,11 +357,11 @@ def p1_cover(c, data):
     fill_rect(c, 0, 0, W, 40, Color(0,0,0,0.88))
     hline(c, 0, 40, W, GREEN_MID, 0.8)
     tl(c, '@coach.teka1', STRIPE_W+16, 15, 'P-Reg', 8, GREEN_MID)
+    c.linkURL('https://www.instagram.com/coach.teka1', (STRIPE_W+16, 8, STRIPE_W+85, 24), relative=0)
     tc(c, '01033047057', W/2, 15, 'P-Reg', 8, GRAY_LIGHT)
     tr(c, f'Coach {data.get("coach_name", "AHMED TEKA")}', W-14, 15, 'P-Bold', 9, GREEN_MID)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 2 - PROFILE
 # ═══════════════════════════════════════════════
@@ -371,16 +371,16 @@ def p2_profile(c, data):
     chrome(c, 'CLIENT PROFILE', 2, data)
     x, y, cw = content_area()
     
-    tc(c, 'CLIENT PROFILE', x + cw/2, y - 10, 'P-Bold', 26, GREEN)
+    tc(c, 'CLIENT PROFILE', x + cw/2, y - 10, 'P-Bold', 30, GREEN)
     hline(c, x, y - 20, cw, GREEN, 1)
     
     py = y - 40
     info_items = [
         ('FULL NAME', data.get('full_name', 'N/A')),
-        ('AGE', data.get('age', 'N/A')),
-        ('WEIGHT', data.get('weight', 'N/A')),
-        ('HEIGHT', data.get('height', 'N/A')),
-        ('GOAL', data.get('goal', 'N/A')),
+        ('AGE',       data.get('age', 'N/A')),
+        ('WEIGHT',    data.get('weight', 'N/A')),
+        ('HEIGHT',    data.get('height', 'N/A')),
+        ('GOAL',      data.get('goal', 'N/A')),
     ]
     
     bw = (cw - 10) / 2
@@ -392,12 +392,12 @@ def p2_profile(c, data):
         
         rrect(c, ix, iy-42, bw, 40, 5, WHITE, GREEN_DIM, 0.3)
         fill_rect(c, ix, iy-42, 3, 40, GREEN)
-        tl(c, lbl, ix+10, iy-14, 'P-Light', 8, GRAY)
+        tl(c, lbl, ix+10, iy-14, 'P-Light', 10, GRAY)
         
         if is_arabic(str(val)):
-            tr(c, val, ix+bw-10, iy-14, 'P-Bold', 14, BLACK)
+            tr(c, val, ix+bw-10, iy-14, 'P-Bold', 16, BLACK)
         else:
-            tl(c, val, ix+10, iy-14, 'P-Bold', 14, BLACK)
+            tl(c, val, ix+10, iy-14, 'P-Bold', 16, BLACK)
     
     ny = py - 130
     if data.get('notes'):
@@ -411,14 +411,14 @@ def p2_profile(c, data):
         ny -= 52
     
     my = ny - 60
-    tc(c, 'DAILY MACRONUTRIENTS', x + cw/2, my, 'P-Bold', 16, GREEN)
+    tc(c, 'DAILY MACRONUTRIENTS', x + cw/2, my, 'P-Bold', 18, GREEN)
     hline(c, x, my-6, cw, GOLD, 0.6)
     
     macros = [
-        ('MEALS', data.get('main_meals', '4'), 'per day', GREEN),
-        ('PROTEIN', data.get('protein_g', '0'), 'g/day', GREEN_MID),
-        ('CARBS', data.get('carbs_g', '0'), 'g/day', GOLD2),
-        ('FAT', data.get('fat_g', '0'), 'g/day', GREEN_LIGHT),
+        ('MEALS',   data.get('main_meals', '4'),  'per day', GREEN),
+        ('PROTEIN', data.get('protein_g', '0'),   'g/day',   GREEN_MID),
+        ('CARBS',   data.get('carbs_g', '0'),     'g/day',   GOLD2),
+        ('FAT',     data.get('fat_g', '0'),       'g/day',   GREEN_LIGHT),
     ]
     
     mw = (cw - 24) / 4
@@ -427,11 +427,10 @@ def p2_profile(c, data):
         rrect(c, mx, my-60, mw, 55, 7, WHITE, color, 0.8)
         circle(c, mx + mw/2, my-20, 18, color)
         tc(c, val, mx + mw/2, my-25, 'P-Bold', 15, WHITE)
-        tc(c, lbl, mx + mw/2, my-42, 'P-Light', 8, GRAY)
-        tc(c, unit, mx + mw/2, my-52, 'P-Light', 7, GRAY)
+        tc(c, lbl, mx + mw/2, my-42, 'P-Light', 9, GRAY)
+        tc(c, unit, mx + mw/2, my-52, 'P-Light', 8, GRAY)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 3 - MEALS
 # ═══════════════════════════════════════════════
@@ -450,7 +449,7 @@ def p3_meals(c, data):
     chrome(c, 'DAILY MEAL PLAN', 3, data)
     x, y, cw = content_area()
     
-    tc(c, 'DAILY MEAL PLAN', x + cw/2, y - 10, 'P-Bold', 24, GREEN)
+    tc(c, 'DAILY MEAL PLAN', x + cw/2, y - 10, 'P-Bold', 28, GREEN)
     hline(c, x, y - 18, cw, GREEN, 0.8)
     
     meals = data.get('meals', [])
@@ -474,20 +473,20 @@ def p3_meals(c, data):
             circle(c, x+28, my-28, 18, GREEN_DIM)
             tc(c, '🍽', x+28, my-32, 'P-Reg', 14, BLACK)
         
-        tr(c, meal.get('name', ''), x+cw-12, my-16, 'P-Bold', 13, BLACK)
-        tr(c, meal.get('type', ''), x+cw-12, my-30, 'P-Reg', 8, GRAY)
+        tr(c, meal.get('name', ''), x+cw-12, my-16, 'P-Bold', 15, BLACK)
+        tr(c, meal.get('type', ''), x+cw-12, my-30, 'P-Reg', 10, GRAY)
         
-        tl(c, f'{meal.get("calories", "0")} kcal', x+56, my-44, 'P-Bold', 18, GREEN)
-        tl(c, f'P:{meal.get("protein","0")}g | C:{meal.get("carbs","0")}g | F:{meal.get("fat","0")}g', x+56, my-58, 'P-Reg', 9, GRAY)
+        tl(c, f'{meal.get("calories", "0")} kcal', x+56, my-44, 'P-Bold', 22, GREEN)
+        tl(c, f'P:{meal.get("protein","0")}g | C:{meal.get("carbs","0")}g | F:{meal.get("fat","0")}g', x+56, my-58, 'P-Reg', 11, GRAY)
         
         ingredients = meal.get('ingredients', [])
         ing_y = my - 44
         if isinstance(ingredients, list):
             for ing in ingredients[:4]:
-                tr(c, f'• {ing}', x+cw-12, ing_y, 'P-Reg', 11, GRAY_DARK)
+                tr(c, f'• {ing}', x+cw-12, ing_y, 'P-Reg', 13, GRAY_DARK)
                 ing_y -= 14
         else:
-            tr(c, f'• {ingredients[:55]}', x+cw-12, ing_y, 'P-Reg', 11, GRAY_DARK)
+            tr(c, f'• {ingredients[:55]}', x+cw-12, ing_y, 'P-Reg', 13, GRAY_DARK)
         
         alt = meal.get('alternative', '')
         if alt:
@@ -500,7 +499,6 @@ def p3_meals(c, data):
         tc(c, f'Total: {data.get("total_calories", "0")} kcal/day', x + cw/2, my-16, 'P-Bold', 15, GREEN)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 4 - GUIDELINES
 # ═══════════════════════════════════════════════
@@ -510,7 +508,7 @@ def p4_guidelines(c, data):
     chrome(c, 'GUIDELINES', 4, data)
     x, y, cw = content_area()
     
-    tc(c, 'DAILY GUIDELINES', x + cw/2, y - 10, 'P-Bold', 24, GREEN)
+    tc(c, 'DAILY GUIDELINES', x + cw/2, y - 10, 'P-Bold', 28, GREEN)
     hline(c, x, y - 18, cw, GREEN, 0.8)
     
     wy = y - 35
@@ -522,10 +520,10 @@ def p4_guidelines(c, data):
     gy = wy - 65
     gw = (cw - 12) / 2
     guidelines = [
-        ('Meal Timing', data.get('meal_timing', '')),
+        ('Meal Timing',  data.get('meal_timing', '')),
         ('Food Weighing', data.get('food_weighing', '')),
-        ('Drinks', data.get('drinks', '')),
-        ('Restricted', data.get('sweets', '')),
+        ('Drinks',       data.get('drinks', '')),
+        ('Restricted',   data.get('sweets', '')),
     ]
     
     for i, (title, body) in enumerate(guidelines):
@@ -536,12 +534,12 @@ def p4_guidelines(c, data):
         
         rrect(c, gx, gyy-46, gw, 42, 5, WHITE, GREEN_DIM, 0.3)
         fill_rect(c, gx, gyy-46, 3, 42, GREEN)
-        tl(c, title, gx+8, gyy-16, 'P-Bold', 10, GREEN)
-        tr(c, body[:40], gx+gw-8, gyy-16, 'P-Reg', 9, GRAY)
+        tl(c, title, gx+8, gyy-16, 'P-Bold', 11, GREEN)
+        tr(c, body[:40], gx+gw-8, gyy-16, 'P-Reg', 11, GRAY)
     
     oy = gy - 130
     rrect(c, x, oy-32, cw, 28, 5, WHITE, GREEN_DIM, 0.4)
-    tl(c, f'Omega-3: {data.get("omega", "")}', x+10, oy-12, 'P-Bold', 10, GREEN)
+    tl(c, f'Omega-3: {data.get("omega", "")}', x+10, oy-12, 'P-Bold', 11, GREEN)
     
     sy = oy - 48
     tc(c, 'SUPPLEMENTS', x + cw/2, sy, 'P-Bold', 15, GREEN)
@@ -553,8 +551,8 @@ def p4_guidelines(c, data):
         rrect(c, x, sr-26, cw, 24, 4, WHITE, GREEN_DIM, 0.2)
         circle(c, x+18, sr-14, 10, GREEN)
         tc(c, str(i+1), x+18, sr-17, 'P-Bold', 7, WHITE)
-        tl(c, sup.get('name', ''), x+34, sr-6, 'P-Bold', 10, BLACK)
-        tr(c, f'{sup.get("dose", "")} - {sup.get("benefit", "")}'[:45], x+cw-10, sr-6, 'P-Reg', 9, GRAY)
+        tl(c, sup.get('name', ''), x+34, sr-6, 'P-Bold', 11, BLACK)
+        tr(c, f'{sup.get("dose", "")} - {sup.get("benefit", "")}'[:45], x+cw-10, sr-6, 'P-Reg', 10, GRAY)
     
     py2 = sy - 20 - len(supplements) * 35 - 15
     if py2 > FTR_H + 60:
@@ -565,10 +563,9 @@ def p4_guidelines(c, data):
         for i, pw in enumerate(preworkout[:2]):
             pwy = py2 - 20 - i * 30
             rrect(c, x, pwy-22, cw, 20, 4, GREEN_DIM, GREEN, 0.2)
-            tl(c, f'{pw.get("time", "")}: {pw.get("item", "")}'[:65], x+10, pwy-10, 'P-Reg', 9, BLACK)
+            tl(c, f'{pw.get("time", "")}: {pw.get("item", "")}'[:65], x+10, pwy-10, 'P-Reg', 10, BLACK)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 5 - RECIPES
 # ═══════════════════════════════════════════════
@@ -578,7 +575,7 @@ def p5_recipes(c, data):
     chrome(c, 'RECIPES', 5, data)
     x, y, cw = content_area()
     
-    tc(c, 'RECIPE LIBRARY', x + cw/2, y - 10, 'P-Bold', 24, GREEN)
+    tc(c, 'RECIPE LIBRARY', x + cw/2, y - 10, 'P-Bold', 28, GREEN)
     hline(c, x, y - 18, cw, GREEN, 0.8)
     
     recipes = data.get('recipes', [])
@@ -615,8 +612,8 @@ def p5_recipes(c, data):
             c.setLineWidth(2)
             c.circle(rx + rw/2, ryy-40, 24, fill=0, stroke=1)
         
-        tc(c, recipe.get('name', '')[:16], rx + rw/2, ryy-68, 'P-Bold', 10, BLACK)
-        tc(c, recipe.get('desc', '')[:22], rx + rw/2, ryy-82, 'P-Reg', 8, GRAY)
+        tc(c, recipe.get('name', '')[:16], rx + rw/2, ryy-68, 'P-Bold', 12, BLACK)
+        tc(c, recipe.get('desc', '')[:22], rx + rw/2, ryy-82, 'P-Reg', 10, GRAY)
         
         rrect(c, rx+10, ryy-104, rw-20, 18, 4, GREEN)
         tc(c, 'Watch', rx + rw/2, ryy-94, 'P-Bold', 8, WHITE)
@@ -632,7 +629,6 @@ def p5_recipes(c, data):
         tc(c, f'- {data.get("coach_name", "Ahmed Teka")}', x + cw/2, qy-32, 'P-Reg', 10, GRAY)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # PAGE 6 - COACH
 # ═══════════════════════════════════════════════
@@ -669,25 +665,24 @@ def p6_coach(c, data):
     bx_start = W/2 - total_w/2
     
     for i, (lbl, color) in enumerate([
-            (f'{data.get("instagram", "@coach.teka1")}', GREEN_MID),
-            (data.get('phone', '01033047057'), GOLD2),
-        ]):
-            bx = bx_start + i*(btn_w+12)
-            by = 22
-            rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.4), color, 1)
-            tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'P-Bold', 10, WHITE)
-            if i == 0:
-                insta = data.get('instagram', 'coach.teka1').lstrip('@')
-                c.linkURL(
-                    f'https://www.instagram.com/{insta}',
-                    (bx, by, bx+btn_w, by+btn_h),
-                    relative=0
-                )
+        (f'{data.get("instagram", "@coach.teka1")}', GREEN_MID),
+        (data.get('phone', '01033047057'), GOLD2),
+    ]):
+        bx = bx_start + i*(btn_w+12)
+        by = 22
+        rrect(c, bx, by, btn_w, btn_h, 5, Color(0,0,0,0.4), color, 1)
+        tc(c, lbl, bx+btn_w/2, by+btn_h/2-4, 'P-Bold', 10, WHITE)
+        if i == 0:
+            insta = data.get('instagram', 'coach.teka1').lstrip('@')
+            c.linkURL(
+                f'https://www.instagram.com/{insta}',
+                (bx, by, bx+btn_w, by+btn_h),
+                relative=0
+            )
     
     tr(c, f'{TOTAL_PAGES} / {TOTAL_PAGES}', W-14, 85, 'P-Bold', 9, GREEN_MID)
     
     c.showPage()
-
 # ═══════════════════════════════════════════════
 # BUILD
 # ═══════════════════════════════════════════════
